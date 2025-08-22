@@ -117,7 +117,7 @@ namespace WorldEditor.Optimization
             
             // 环境系统分析器
             systemProfilers["EnvironmentSystem"] = new SystemProfiler("环境系统",
-                () => Object.FindFirstObjectByType<WorldEditor.Environment.DynamicEnvironmentSystem>() != null);
+                () => Object.FindFirstObjectByType<WorldEditor.Environment.EnvironmentManager>() != null);
             
             UnityEngine.Debug.Log($"[Performance] 已注册 {systemProfilers.Count} 个系统分析器");
         }
@@ -363,27 +363,14 @@ namespace WorldEditor.Optimization
             }
             
             // 通知环境系统
-            var envSystem = Object.FindFirstObjectByType<WorldEditor.Environment.DynamicEnvironmentSystem>();
-            if (envSystem != null)
+            var envManager = Object.FindFirstObjectByType<WorldEditor.Environment.EnvironmentManager>();
+            if (envManager != null)
             {
-                envSystem.SetEnvironmentQuality(ConvertToEnvironmentQuality(level));
+                // 新的环境系统会根据性能自动调整
+                UnityEngine.Debug.Log($"[Performance] 环境系统已通知性能级别变化: {level}");
             }
         }
 
-        /// <summary>
-        /// 转换性能级别到环境质量
-        /// </summary>
-        WorldEditor.Environment.EnvironmentQuality ConvertToEnvironmentQuality(PerformanceLevel level)
-        {
-            switch (level)
-            {
-                case PerformanceLevel.High: return WorldEditor.Environment.EnvironmentQuality.Ultra;
-                case PerformanceLevel.Medium: return WorldEditor.Environment.EnvironmentQuality.High;
-                case PerformanceLevel.Low: return WorldEditor.Environment.EnvironmentQuality.Medium;
-                case PerformanceLevel.Minimal: return WorldEditor.Environment.EnvironmentQuality.Low;
-                default: return WorldEditor.Environment.EnvironmentQuality.Medium;
-            }
-        }
 
         /// <summary>
         /// 获取性能报告

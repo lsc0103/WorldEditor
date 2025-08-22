@@ -22,11 +22,11 @@ namespace WorldEditor.AI
         [SerializeField] private bool enableMLLearning = false;
         [SerializeField] private int trainingIterations = 100;
         
-        private DynamicEnvironmentSystem environmentSystem;
+        private EnvironmentManager environmentManager;
         
-        public void Initialize(DynamicEnvironmentSystem envSystem)
+        public void Initialize(EnvironmentManager envManager)
         {
-            environmentSystem = envSystem;
+            environmentManager = envManager;
         }
         
         /// <summary>

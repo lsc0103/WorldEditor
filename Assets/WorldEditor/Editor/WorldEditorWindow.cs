@@ -37,7 +37,7 @@ namespace WorldEditor.Editor
         private WorldEditorManager worldManager;
         private AdvancedTerrainGenerator terrainGenerator;
         private SmartPlacementSystem placementSystem;
-        private DynamicEnvironmentSystem environmentSystem;
+        private EnvironmentManager environmentManager;
 
         // UI状态
         private Vector2 scrollPosition;
@@ -190,7 +190,7 @@ namespace WorldEditor.Editor
             
             DrawStatusLine("地形生成系统", terrainGenerator != null, "管理地形生成和修改");
             DrawStatusLine("智能放置系统", placementSystem != null, "自动放置植被和物体");
-            DrawStatusLine("环境天气系统", environmentSystem != null, "控制天气和环境效果");
+            DrawStatusLine("环境天气系统", environmentManager != null, "控制天气和环境效果");
             DrawStatusLine("AI生成系统", true, "AI辅助内容生成");
             DrawStatusLine("性能优化", true, "LOD和性能管理");
             
@@ -357,7 +357,7 @@ namespace WorldEditor.Editor
             EditorGUILayout.BeginVertical(sectionStyle);
             GUILayout.Label("环境天气系统", EditorStyles.boldLabel);
             
-            if (environmentSystem == null)
+            if (environmentManager == null)
             {
                 EditorGUILayout.HelpBox("未找到环境系统组件", MessageType.Warning);
                 if (GUILayout.Button("创建环境系统"))
@@ -458,10 +458,10 @@ namespace WorldEditor.Editor
             worldManager = Object.FindFirstObjectByType<WorldEditorManager>();
             terrainGenerator = Object.FindFirstObjectByType<AdvancedTerrainGenerator>();
             placementSystem = Object.FindFirstObjectByType<SmartPlacementSystem>();
-            environmentSystem = Object.FindFirstObjectByType<DynamicEnvironmentSystem>();
+            environmentManager = Object.FindFirstObjectByType<EnvironmentManager>();
             
             systemsInitialized = (worldManager != null && terrainGenerator != null && 
-                                placementSystem != null && environmentSystem != null);
+                                placementSystem != null && environmentManager != null);
             
             statusMessage = systemsInitialized ? "所有系统已就绪" : "部分系统未初始化";
         }
@@ -514,12 +514,12 @@ namespace WorldEditor.Editor
         {
             if (worldManager != null)
             {
-                environmentSystem = worldManager.gameObject.AddComponent<DynamicEnvironmentSystem>();
+                environmentManager = worldManager.gameObject.AddComponent<EnvironmentManager>();
             }
             else
             {
                 GameObject environmentGO = new GameObject("EnvironmentSystem");
-                environmentSystem = environmentGO.AddComponent<DynamicEnvironmentSystem>();
+                environmentManager = environmentGO.AddComponent<EnvironmentManager>();
             }
             statusMessage = "环境系统已创建";
             Repaint();
@@ -629,19 +629,19 @@ namespace WorldEditor.Editor
 
         void SetWeather(WeatherType weather)
         {
-            if (environmentSystem != null)
+            if (environmentManager != null)
             {
-                environmentSystem.SetTargetWeather(weather);
+                environmentManager.SetWeather(weather);
                 statusMessage = $"天气已设置为: {weather}";
             }
         }
 
-        void SetTimeOfDay(TimeOfDay timeOfDay)
+        void SetTimeOfDay(float normalizedTime)
         {
-            if (environmentSystem != null)
+            if (environmentManager != null)
             {
-                environmentSystem.SetTimeOfDay(timeOfDay);
-                statusMessage = $"时间已设置为: {timeOfDay}";
+                environmentManager.SetTimeOfDay(normalizedTime);
+                statusMessage = $"时间已设置为: {normalizedTime:F2}";
             }
         }
 

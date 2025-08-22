@@ -16,7 +16,7 @@ namespace WorldEditor.Core
         [SerializeField] private TerrainSystem.AdvancedTerrainGenerator terrainGenerator;
         [SerializeField] private TerrainSystem.MultiTerrainManager multiTerrainManager; // 新增：多地形管理器
         [SerializeField] private Placement.SmartPlacementSystem placementSystem;
-        [SerializeField] private Environment.DynamicEnvironmentSystem environmentSystem;
+        [SerializeField] private Environment.EnvironmentManager environmentManager;
         [SerializeField] private AI.AIGenerationSystem aiGenerationSystem;
         [SerializeField] private Optimization.WorldOptimizer worldOptimizer;
         
@@ -61,8 +61,8 @@ namespace WorldEditor.Core
             if (placementSystem == null)
                 placementSystem = Object.FindFirstObjectByType<Placement.SmartPlacementSystem>();
                 
-            if (environmentSystem == null)
-                environmentSystem = Object.FindFirstObjectByType<Environment.DynamicEnvironmentSystem>();
+            if (environmentManager == null)
+                environmentManager = Object.FindFirstObjectByType<Environment.EnvironmentManager>();
                 
             if (aiGenerationSystem == null)
                 aiGenerationSystem = Object.FindFirstObjectByType<AI.AIGenerationSystem>();
@@ -124,7 +124,7 @@ namespace WorldEditor.Core
                     placementSystem?.PlaceStructures(task.parameters);
                     break;
                 case GenerationTaskType.Environment:
-                    environmentSystem?.UpdateEnvironment(task.parameters);
+                    environmentManager?.UpdateEnvironment();
                     break;
             }
         }

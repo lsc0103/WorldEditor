@@ -27,15 +27,15 @@ namespace WorldEditor.Optimization
         [SerializeField] private float performanceCheckInterval = 1f;
         
         // 私有变量
-        private DynamicEnvironmentSystem environmentSystem;
+        private EnvironmentManager environmentManager;
         private Camera mainCamera;
         private float lastPerformanceCheck;
         private Queue<float> frameTimeHistory = new Queue<float>();
         private const int FRAME_HISTORY_SIZE = 60;
         
-        public void Initialize(DynamicEnvironmentSystem envSystem)
+        public void Initialize(EnvironmentManager envManager)
         {
-            environmentSystem = envSystem;
+            environmentManager = envManager;
             mainCamera = Camera.main ?? Object.FindFirstObjectByType<Camera>();
             SetupOptimization();
         }

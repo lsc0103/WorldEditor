@@ -48,7 +48,7 @@ namespace WorldEditor.Editor
             // 添加基础组件
             managerGO.AddComponent<AdvancedTerrainGenerator>();
             managerGO.AddComponent<SmartPlacementSystem>();
-            managerGO.AddComponent<DynamicEnvironmentSystem>();
+            managerGO.AddComponent<EnvironmentManager>();
             
             Selection.activeGameObject = managerGO;
             EditorGUIUtility.PingObject(managerGO);
@@ -92,7 +92,7 @@ namespace WorldEditor.Editor
         public static void CreateEnvironmentSystem()
         {
             GameObject envGO = new GameObject("EnvironmentSystem");
-            var environment = envGO.AddComponent<DynamicEnvironmentSystem>();
+            var environment = envGO.AddComponent<EnvironmentManager>();
             
             Selection.activeGameObject = envGO;
             EditorGUIUtility.PingObject(envGO);
@@ -275,7 +275,7 @@ namespace WorldEditor.Editor
             // 创建环境系统
             GameObject environmentSystemGO = new GameObject("EnvironmentSystem");
             environmentSystemGO.transform.SetParent(projectRoot.transform);
-            var environmentSystem = environmentSystemGO.AddComponent<DynamicEnvironmentSystem>();
+            var environmentSystem = environmentSystemGO.AddComponent<EnvironmentManager>();
             
             // 创建光照
             GameObject lightGO = new GameObject("Main Light");
@@ -320,7 +320,7 @@ namespace WorldEditor.Editor
             var worldManager = Object.FindFirstObjectByType<WorldEditorManager>();
             var terrainGen = Object.FindFirstObjectByType<AdvancedTerrainGenerator>();
             var placementSystem = Object.FindFirstObjectByType<SmartPlacementSystem>();
-            var environmentSystem = Object.FindFirstObjectByType<DynamicEnvironmentSystem>();
+            var environmentSystem = Object.FindFirstObjectByType<EnvironmentManager>();
             
             report += $"世界管理器: {(worldManager != null ? "已安装" : "未找到")}\n";
             report += $"地形生成器: {(terrainGen != null ? "已安装" : "未找到")}\n";
