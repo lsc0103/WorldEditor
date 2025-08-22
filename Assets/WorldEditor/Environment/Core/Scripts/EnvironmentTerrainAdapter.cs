@@ -372,7 +372,7 @@ namespace WorldEditor.Environment
             yield return new WaitForSeconds(adaptationDelay);
 
             // TODO: 根据温度调整雪线、植被线等
-            Debug.log($"[EnvironmentTerrainAdapter] 适配温度地形变化: {temperature}°C");
+            Debug.Log($"[EnvironmentTerrainAdapter] 适配温度地形变化: {temperature}°C");
         }
 
         /// <summary>
