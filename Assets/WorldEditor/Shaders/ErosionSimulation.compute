@@ -1,0 +1,116 @@
+// WorldEditor GPU加速侵蚀模拟 Compute Shader
+// 实现基于水流的地形侵蚀效果，超越传统CPU计算速度
+#pragma kernel CSErosionSimulation
+
+// 高度图输入/输出
+RWTexture2D<float> HeightMap;
+
+// 临时缓冲区
+RWTexture2D<float> WaterMap;
+RWTexture2D<float2> VelocityMap;
+RWTexture2D<float> SedimentMap;
+
+// 侵蚀参数
+float4 ErosionParams; // x: rainStrength, y: evaporationRate, z: sedimentCapacity, w: depositionRate
+float4 FlowParams; // x: gravity, y: minSlope, z: maxSpeed, w: deltaTime
+float4 TerrainInfo; // x: width, y: height, z: scale, w: iterations
+
+groupshared float heightCache[10][10];
+groupshared float waterCache[10][10];
+
+[numthreads(8,8,1)]
+void CSErosionSimulation (uint3 id : SV_DispatchThreadID)
+{
+    uint width, height;
+    HeightMap.GetDimensions(width, height);
+    
+    if (id.x >= width || id.y >= height)
+        return;
+    
+    int2 coord = int2(id.xy);
+    
+    // 缓存周围的高度值到共享内存
+    uint localX = id.x % 8 + 1;
+    uint localY = id.y % 8 + 1;
+    
+    // 读取当前高度和水位
+    float currentHeight = HeightMap[coord];
+    float currentWater = WaterMap[coord];
+    float2 currentVelocity = VelocityMap[coord];
+    float currentSediment = SedimentMap[coord];
+    
+    // 添加降雨
+    currentWater += ErosionParams.x * FlowParams.w; // rainStrength * deltaTime
+    
+    // 计算水流方向（基于高度差）
+    float2 gradient = float2(0, 0);
+    
+    // 检查四个邻居
+    if (coord.x > 0)
+    {
+        float leftHeight = HeightMap[coord + int2(-1, 0)];
+        gradient.x += currentHeight - leftHeight;
+    }
+    
+    if (coord.x < width - 1)
+    {
+        float rightHeight = HeightMap[coord + int2(1, 0)];
+        gradient.x += rightHeight - currentHeight;
+    }
+    
+    if (coord.y > 0)
+    {
+        float bottomHeight = HeightMap[coord + int2(0, -1)];
+        gradient.y += currentHeight - bottomHeight;
+    }
+    
+    if (coord.y < height - 1)
+    {
+        float topHeight = HeightMap[coord + int2(0, 1)];
+        gradient.y += topHeight - currentHeight;
+    }
+    
+    // 更新速度（基于重力和梯度）
+    currentVelocity += gradient * FlowParams.x * FlowParams.w; // gravity * deltaTime
+    
+    // 限制最大速度
+    float speed = length(currentVelocity);
+    if (speed > FlowParams.z) // maxSpeed
+    {
+        currentVelocity = normalize(currentVelocity) * FlowParams.z;
+        speed = FlowParams.z;
+    }
+    
+    // 计算侵蚀能力（基于速度和水量）
+    float erosionCapacity = ErosionParams.z * speed * currentWater; // sedimentCapacity
+    
+    // 侵蚀或沉积
+    if (currentSediment > erosionCapacity)
+    {
+        // 沉积：减少沉积物，增加高度
+        float deposition = (currentSediment - erosionCapacity) * ErosionParams.w; // depositionRate
+        currentHeight += deposition * FlowParams.w;
+        currentSediment -= deposition;
+    }
+    else
+    {
+        // 侵蚀：减少高度，增加沉积物
+        float erosion = min(erosionCapacity - currentSediment, currentHeight * 0.01f); // 限制侵蚀量
+        currentHeight -= erosion * FlowParams.w;
+        currentSediment += erosion;
+    }
+    
+    // 蒸发
+    currentWater *= (1.0 - ErosionParams.y * FlowParams.w); // evaporationRate
+    
+    // 确保值在合理范围内
+    currentHeight = max(0.0, currentHeight);
+    currentWater = max(0.0, currentWater);
+    currentSediment = max(0.0, currentSediment);
+    
+    // 写回结果
+    HeightMap[coord] = currentHeight;
+    WaterMap[coord] = currentWater;
+    VelocityMap[coord] = currentVelocity;
+    SedimentMap[coord] = currentSediment;
+}
