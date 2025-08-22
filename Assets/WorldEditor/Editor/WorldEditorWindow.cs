@@ -373,19 +373,19 @@ namespace WorldEditor.Editor
             EditorGUILayout.BeginHorizontal();
             if (GUILayout.Button("晴朗"))
             {
-                SetWeather(WeatherType.Clear);
+                SetWeather(WorldEditor.Environment.WeatherType.Clear);
             }
             if (GUILayout.Button("阴天"))
             {
-                SetWeather(WeatherType.Cloudy);
+                SetWeather(WorldEditor.Environment.WeatherType.Cloudy);
             }
             if (GUILayout.Button("雨天"))
             {
-                SetWeather(WeatherType.Rainy);
+                SetWeather(WorldEditor.Environment.WeatherType.Rainy);
             }
             if (GUILayout.Button("暴风雨"))
             {
-                SetWeather(WeatherType.Stormy);
+                SetWeather(WorldEditor.Environment.WeatherType.Storm);
             }
             EditorGUILayout.EndHorizontal();
             
@@ -395,19 +395,19 @@ namespace WorldEditor.Editor
             EditorGUILayout.BeginHorizontal();
             if (GUILayout.Button("黎明"))
             {
-                SetTimeOfDay(TimeOfDay.Dawn);
+                SetTimeOfDay(0.25f); // 6:00 AM
             }
             if (GUILayout.Button("中午"))
             {
-                SetTimeOfDay(TimeOfDay.Noon);
+                SetTimeOfDay(0.5f); // 12:00 PM
             }
             if (GUILayout.Button("黄昏"))
             {
-                SetTimeOfDay(TimeOfDay.Dusk);
+                SetTimeOfDay(0.75f); // 6:00 PM
             }
             if (GUILayout.Button("夜晚"))
             {
-                SetTimeOfDay(TimeOfDay.Night);
+                SetTimeOfDay(0.0f); // 12:00 AM
             }
             EditorGUILayout.EndHorizontal();
             
