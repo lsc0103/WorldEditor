@@ -627,7 +627,7 @@ namespace WorldEditor.Editor
             statusMessage = "生态系统模拟已开始";
         }
 
-        void SetWeather(WeatherType weather)
+        void SetWeather(WorldEditor.Environment.WeatherType weather)
         {
             if (environmentManager != null)
             {
