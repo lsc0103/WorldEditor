@@ -27,7 +27,7 @@ namespace WorldEditor.Environment
             {
                 if (_instance == null)
                 {
-                    _instance = FindObjectOfType<EnvironmentManager>();
+                    _instance = FindFirstObjectByType<EnvironmentManager>();
                     if (_instance == null)
                     {
                         GameObject go = new GameObject("EnvironmentManager");
@@ -185,7 +185,7 @@ namespace WorldEditor.Environment
             // 验证AccelEngine
             if (accelEngine == null)
             {
-                accelEngine = FindObjectOfType<AccelEngine>();
+                accelEngine = FindFirstObjectByType<AccelEngine>();
                 if (accelEngine == null)
                 {
                     Debug.LogWarning("[EnvironmentManager] 未找到AccelEngine，GPU加速功能将被禁用");
@@ -196,7 +196,7 @@ namespace WorldEditor.Environment
             // 验证地形生成器
             if (terrainGenerator == null)
             {
-                terrainGenerator = FindObjectOfType<AdvancedTerrainGenerator>();
+                terrainGenerator = FindFirstObjectByType<AdvancedTerrainGenerator>();
                 if (terrainGenerator == null)
                 {
                     Debug.LogWarning("[EnvironmentManager] 未找到AdvancedTerrainGenerator，地形集成功能受限");

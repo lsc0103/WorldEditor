@@ -129,7 +129,7 @@ namespace WorldEditor.Placement
         [ContextMenu("清除测试实例")]
         public void ClearTestInstances()
         {
-            var testObjects = GameObject.FindObjectsOfType<GameObject>();
+            var testObjects = GameObject.FindObjectsByType<GameObject>(FindObjectsSortMode.None);
             int cleared = 0;
             
             foreach (var obj in testObjects)

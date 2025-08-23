@@ -163,7 +163,7 @@ namespace WorldEditor.Environment
         {
             if (sunLight == null)
             {
-                Light[] lights = FindObjectsOfType<Light>();
+                Light[] lights = FindObjectsByType<Light>(FindObjectsSortMode.None);
                 foreach (Light light in lights)
                 {
                     if (light.type == LightType.Directional && light.gameObject.name.ToLower().Contains("sun"))
