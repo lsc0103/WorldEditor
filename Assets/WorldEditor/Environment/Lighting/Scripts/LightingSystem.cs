@@ -87,7 +87,10 @@ namespace WorldEditor.Environment
         private bool isInitialized = false;
         private bool isActive = false;
         private float currentTimeOfDay = 0.5f;
+        private SeasonType currentSeason = SeasonType.Spring;
         private EnvironmentState linkedEnvironmentState;
+        private TimeSystem linkedTimeSystem;
+        private SeasonSystem linkedSeasonSystem;
 
         #endregion
 
@@ -119,7 +122,7 @@ namespace WorldEditor.Environment
         /// <summary>
         /// 初始化光照系统
         /// </summary>
-        public void Initialize(EnvironmentState environmentState = null)
+        public void Initialize(EnvironmentState environmentState = null, TimeSystem timeSystem = null, SeasonSystem seasonSystem = null)
         {
             if (isInitialized)
             {
@@ -129,8 +132,10 @@ namespace WorldEditor.Environment
 
             Debug.Log("[LightingSystem] 开始初始化光照系统...");
 
-            // 链接环境状态
+            // 链接系统引用
             linkedEnvironmentState = environmentState;
+            linkedTimeSystem = timeSystem;
+            linkedSeasonSystem = seasonSystem;
 
             // 自动查找光照对象
             if (autoFindLights)
@@ -144,16 +149,42 @@ namespace WorldEditor.Environment
             // 配置阴影设置
             ConfigureShadowSettings();
 
+            // 订阅系统事件
+            SubscribeToSystemEvents();
+
             // 同步环境状态
             if (linkedEnvironmentState != null)
             {
                 SyncFromEnvironmentState();
             }
 
+            // 执行初始光照更新
+            UpdateLighting();
+
             isActive = true;
             isInitialized = true;
 
             Debug.Log("[LightingSystem] 光照系统初始化完成");
+        }
+
+        /// <summary>
+        /// 订阅系统事件
+        /// </summary>
+        private void SubscribeToSystemEvents()
+        {
+            // 订阅时间系统事件
+            if (linkedTimeSystem != null)
+            {
+                linkedTimeSystem.OnTimeChanged += HandleTimeChanged;
+                Debug.Log("[LightingSystem] 已订阅时间系统事件");
+            }
+
+            // 订阅季节系统事件
+            if (linkedSeasonSystem != null)
+            {
+                SeasonSystem.OnSeasonChanged += HandleSeasonChanged;
+                Debug.Log("[LightingSystem] 已订阅季节系统事件");
+            }
         }
 
         /// <summary>
@@ -256,6 +287,30 @@ namespace WorldEditor.Environment
 
         #endregion
 
+        #region 事件处理
+
+        /// <summary>
+        /// 处理时间变化事件
+        /// </summary>
+        private void HandleTimeChanged(float normalizedTime)
+        {
+            currentTimeOfDay = normalizedTime;
+            SetTimeOfDay(normalizedTime);
+        }
+
+        /// <summary>
+        /// 处理季节变化事件
+        /// </summary>
+        private void HandleSeasonChanged(SeasonType newSeason, SeasonType oldSeason)
+        {
+            currentSeason = newSeason;
+            // 季节变化时重新计算光照
+            SetTimeOfDay(currentTimeOfDay);
+            Debug.Log($"[LightingSystem] 光照适配季节变化: {oldSeason} → {newSeason}");
+        }
+
+        #endregion
+
         #region 光照控制方法
 
         /// <summary>
@@ -283,10 +338,14 @@ namespace WorldEditor.Environment
 
             // 计算太阳强度
             float intensity = sunIntensityCurve.Evaluate(timeOfDay) * maxSunIntensity;
-            sunLight.intensity = intensity;
 
             // 计算太阳颜色
             Color color = sunColorGradient.Evaluate(timeOfDay);
+
+            // 应用季节调整
+            ApplySeasonalAdjustment(ref intensity, ref color);
+
+            sunLight.intensity = intensity;
             sunLight.color = color;
 
             // 计算太阳角度（-90度到90度）
@@ -428,6 +487,43 @@ namespace WorldEditor.Environment
             GUILayout.Label($"月亮强度: {(moonLight ? moonLight.intensity : 0):F2}");
             
             GUILayout.EndArea();
+        }
+
+        /// <summary>
+        /// 应用季节性光照调整
+        /// </summary>
+        private void ApplySeasonalAdjustment(ref float intensity, ref Color color)
+        {
+            switch (currentSeason)
+            {
+                case SeasonType.Spring:
+                    color = Color.Lerp(color, new Color(1f, 1f, 0.95f), 0.1f);
+                    break;
+                case SeasonType.Summer:
+                    intensity *= 1.05f;
+                    color = Color.Lerp(color, new Color(1f, 0.99f, 0.88f), 0.1f);
+                    break;
+                case SeasonType.Autumn:
+                    color = Color.Lerp(color, new Color(1f, 0.85f, 0.65f), 0.15f);
+                    break;
+                case SeasonType.Winter:
+                    intensity *= 0.9f;
+                    color = Color.Lerp(color, new Color(0.95f, 0.95f, 1f), 0.1f);
+                    break;
+            }
+        }
+
+        /// <summary>
+        /// 取消订阅事件
+        /// </summary>
+        void OnDestroy()
+        {
+            if (linkedTimeSystem != null)
+            {
+                linkedTimeSystem.OnTimeChanged -= HandleTimeChanged;
+            }
+            
+            SeasonSystem.OnSeasonChanged -= HandleSeasonChanged;
         }
 
         #endregion

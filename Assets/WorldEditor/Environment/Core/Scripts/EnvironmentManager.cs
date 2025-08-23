@@ -327,12 +327,17 @@ namespace WorldEditor.Environment
             }
             seasonSystem.Initialize(currentState, timeSystem);
 
-            // 初始化其他子系统（如果存在）
+            // 初始化光照系统
             if (lightingSystem == null)
             {
                 lightingSystem = GetComponent<LightingSystem>();
             }
+            if (lightingSystem != null)
+            {
+                lightingSystem.Initialize(currentState, timeSystem, seasonSystem);
+            }
             
+            // 初始化其他子系统（如果存在）
             if (skySystem == null)
             {
                 skySystem = GetComponent<SkySystem>();
@@ -348,7 +353,7 @@ namespace WorldEditor.Environment
                 waterSystem = GetComponent<WaterSystem>();
             }
 
-            Debug.Log($"[EnvironmentManager] 环境子系统初始化完成 - TimeSystem: {timeSystem != null}, SeasonSystem: {seasonSystem != null}");
+            Debug.Log($"[EnvironmentManager] 环境子系统初始化完成 - TimeSystem: {timeSystem != null}, SeasonSystem: {seasonSystem != null}, LightingSystem: {lightingSystem != null}");
         }
 
         /// <summary>
