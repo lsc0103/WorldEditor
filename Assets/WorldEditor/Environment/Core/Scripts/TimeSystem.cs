@@ -36,42 +36,16 @@ namespace WorldEditor.Environment
 
         #endregion
 
-        #region 季节配置参数
-
-        [Header("季节系统配置")]
-        [Tooltip("是否启用季节系统")]
-        public bool enableSeasons = true;
-        
-        [Tooltip("每个季节的长度 (游戏内天数)")]
-        [Range(1f, 365f)]
-        public float seasonLength = 30f;
-        
-        [Tooltip("季节过渡是否平滑")]
-        public bool smoothSeasonTransition = true;
-
-        #endregion
 
         #region 当前状态
 
         [Header("当前时间状态 (只读)")]
         [SerializeField] private float currentTime = 0.5f;        // 当前一天内时间 0-1
         [SerializeField] private int daysPassed = 0;              // 已经过天数
-        [SerializeField] private SeasonType currentSeason = SeasonType.Spring;
-        [SerializeField] private float seasonProgress = 0f;      // 当前季节进度 0-1
         [SerializeField] private bool isPaused = false;          // 是否暂停
 
         #endregion
 
-        #region 光照控制
-
-        [Header("光照控制")]
-        [Tooltip("太阳光源 (Directional Light)")]
-        public Light sunLight;
-        
-        [Tooltip("是否自动控制太阳光")]
-        public bool controlSunLight = true;
-
-        #endregion
 
         #region 运行时状态
 
@@ -90,9 +64,6 @@ namespace WorldEditor.Environment
         /// <summary>新一天开始事件 (参数：天数)</summary>
         public event Action<int> OnNewDay;
         
-        /// <summary>季节变化事件 (参数：新季节, 旧季节)</summary>
-        public event Action<SeasonType, SeasonType> OnSeasonChanged;
-        
         /// <summary>小时变化事件 (参数：小时0-23)</summary>
         public event Action<int> OnHourChanged;
 
@@ -108,12 +79,6 @@ namespace WorldEditor.Environment
         
         /// <summary>已经过天数</summary>
         public int DaysPassed => daysPassed;
-        
-        /// <summary>当前季节</summary>
-        public SeasonType CurrentSeason => currentSeason;
-        
-        /// <summary>季节进度 (0-1)</summary>
-        public float SeasonProgress => seasonProgress;
         
         /// <summary>是否暂停</summary>
         public bool IsPaused => isPaused;
@@ -149,23 +114,18 @@ namespace WorldEditor.Environment
 
             // 设置初始时间
             currentTime = startTimeOfDay;
-            currentSeason = startSeason;
             daysPassed = 0;
-            seasonProgress = 0f;
             isPaused = false;
 
             // 同步到环境状态
             SyncToEnvironmentState();
-
-            // 查找并设置太阳光
-            SetupSunLight();
 
             // 启动时间更新
             isActive = true;
             isInitialized = true;
             lastUpdateTime = Time.time;
 
-            Debug.Log($"[TimeSystem] 时间系统初始化完成 - 开始时间: {GetTimeString()}, 季节: {currentSeason}");
+            Debug.Log($"[TimeSystem] 时间系统初始化完成 - 开始时间: {GetTimeString()}");
         }
 
         #endregion
@@ -259,75 +219,6 @@ namespace WorldEditor.Environment
 
         #endregion
 
-        #region 季节控制方法
-
-        /// <summary>
-        /// 设置季节
-        /// </summary>
-        public void SetSeason(SeasonType season)
-        {
-            if (currentSeason == season) return;
-            
-            SeasonType previousSeason = currentSeason;
-            currentSeason = season;
-            seasonProgress = 0f; // 重置季节进度
-            
-            // 触发季节变化事件
-            OnSeasonChanged?.Invoke(currentSeason, previousSeason);
-            
-            // 同步到环境状态
-            SyncToEnvironmentState();
-            
-            Debug.Log($"[TimeSystem] 季节从 {previousSeason} 变更为 {currentSeason}");
-        }
-
-        /// <summary>
-        /// 跳转到下一个季节
-        /// </summary>
-        public void AdvanceToNextSeason()
-        {
-            SeasonType nextSeason = GetNextSeason(currentSeason);
-            SetSeason(nextSeason);
-        }
-
-        /// <summary>
-        /// 设置为春天
-        /// </summary>
-        [ContextMenu("设置春天")]
-        public void SetSpring()
-        {
-            SetSeason(SeasonType.Spring);
-        }
-
-        /// <summary>
-        /// 设置为夏天
-        /// </summary>
-        [ContextMenu("设置夏天")]
-        public void SetSummer()
-        {
-            SetSeason(SeasonType.Summer);
-        }
-
-        /// <summary>
-        /// 设置为秋天
-        /// </summary>
-        [ContextMenu("设置秋天")]
-        public void SetAutumn()
-        {
-            SetSeason(SeasonType.Autumn);
-        }
-
-        /// <summary>
-        /// 设置为冬天
-        /// </summary>
-        [ContextMenu("设置冬天")]
-        public void SetWinter()
-        {
-            SetSeason(SeasonType.Winter);
-        }
-
-        #endregion
-
         #region 系统更新
 
         /// <summary>
@@ -389,131 +280,10 @@ namespace WorldEditor.Environment
             // 触发时间变化事件
             OnTimeChanged?.Invoke(currentTime);
             
-            // 更新季节进度
-            if (enableSeasons)
-            {
-                UpdateSeasonProgress();
-            }
-            
             // 同步到环境状态
             SyncToEnvironmentState();
-            
-            // 更新太阳光
-            UpdateSunLight();
         }
 
-        /// <summary>
-        /// 设置太阳光引用
-        /// </summary>
-        private void SetupSunLight()
-        {
-            Debug.Log("[TimeSystem] 开始查找太阳光...");
-            
-            if (sunLight == null)
-            {
-                // 自动查找场景中的Directional Light
-                Light[] lights = FindObjectsByType<Light>(FindObjectsSortMode.None);
-                Debug.Log($"[TimeSystem] 找到 {lights.Length} 个光源");
-                
-                foreach (Light light in lights)
-                {
-                    Debug.Log($"[TimeSystem] 检查光源: {light.name}, 类型: {light.type}");
-                    if (light.type == LightType.Directional)
-                    {
-                        sunLight = light;
-                        Debug.Log($"[TimeSystem] ✅ 自动找到太阳光: {sunLight.name}");
-                        break;
-                    }
-                }
-            }
-            else
-            {
-                Debug.Log($"[TimeSystem] ✅ 使用已设置的太阳光: {sunLight.name}");
-            }
-            
-            if (sunLight == null)
-            {
-                Debug.LogWarning("[TimeSystem] ❌ 未找到Directional Light，无法控制太阳光");
-                controlSunLight = false;
-            }
-        }
-
-        /// <summary>
-        /// 更新太阳光照
-        /// </summary>
-        private void UpdateSunLight()
-        {
-            if (!controlSunLight || sunLight == null) return;
-
-            // 计算太阳角度 (-90度到90度，0度为正午)
-            float sunAngle = GetSunAngle();
-            
-            // 设置太阳光方向
-            Vector3 sunDirection = Quaternion.Euler(sunAngle, 0, 0) * Vector3.forward;
-            sunLight.transform.rotation = Quaternion.LookRotation(sunDirection);
-            
-            // 设置太阳光颜色和强度
-            UpdateSunLightColor();
-        }
-
-        /// <summary>
-        /// 更新太阳光颜色和强度
-        /// </summary>
-        private void UpdateSunLightColor()
-        {
-            if (sunLight == null) return;
-
-            Color sunColor = Color.white;
-            float intensity = 1f;
-            
-            // 根据时间调整颜色 - 更真实的色彩
-            if (currentTime < 0.2f || currentTime > 0.8f) // 深夜 (20:00-4:00)
-            {
-                intensity = 0.05f;
-                sunColor = new Color(0.3f, 0.4f, 0.7f); // 深蓝月光
-            }
-            else if (currentTime < 0.3f) // 日出 (4:00-7:00)
-            {
-                float t = (currentTime - 0.2f) / 0.1f; // 0-1
-                intensity = Mathf.Lerp(0.1f, 0.8f, t);
-                sunColor = Color.Lerp(new Color(1f, 0.4f, 0.2f), new Color(1f, 0.9f, 0.7f), t); // 红→金黄
-            }
-            else if (currentTime < 0.7f) // 白天 (7:00-17:00)
-            {
-                intensity = 1f;
-                sunColor = new Color(1f, 0.98f, 0.9f); // 自然白光
-            }
-            else // 日落 (17:00-20:00)
-            {
-                float t = (currentTime - 0.7f) / 0.1f; // 0-1
-                intensity = Mathf.Lerp(1f, 0.1f, t);
-                sunColor = Color.Lerp(new Color(1f, 0.9f, 0.7f), new Color(1f, 0.3f, 0.1f), t); // 金黄→深红
-            }
-            
-            // 季节微调 - 更细微的变化
-            switch (currentSeason)
-            {
-                case SeasonType.Spring:
-                    sunColor = Color.Lerp(sunColor, new Color(1f, 1f, 0.95f), 0.1f);
-                    break;
-                case SeasonType.Summer:
-                    intensity *= 1.05f;
-                    sunColor = Color.Lerp(sunColor, new Color(1f, 0.99f, 0.88f), 0.1f);
-                    break;
-                case SeasonType.Autumn:
-                    sunColor = Color.Lerp(sunColor, new Color(1f, 0.85f, 0.65f), 0.15f);
-                    break;
-                case SeasonType.Winter:
-                    intensity *= 0.9f;
-                    sunColor = Color.Lerp(sunColor, new Color(0.95f, 0.95f, 1f), 0.1f);
-                    break;
-            }
-            
-            sunLight.color = sunColor;
-            sunLight.intensity = intensity;
-            
-            Debug.Log($"[TimeSystem] 更新太阳光 - 时间:{currentTime:F2}, 强度:{intensity:F2}, 颜色:{sunColor}");
-        }
 
         /// <summary>
         /// 推进到新一天
