@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEditor;
-using WorldEditor.Environment;
 
 namespace WorldEditor.Environment.Editor
 {

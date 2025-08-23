@@ -129,6 +129,7 @@ namespace WorldEditor.Environment
         private void InitializeCachedData()
         {
             cachedTerrainData = new TerrainAdaptationData();
+            cachedTerrainData.lastUpdateTime = Time.time; // 在这里设置运行时时间
             
             if (environmentManager != null && environmentManager.CurrentState != null)
             {
@@ -548,7 +549,7 @@ namespace WorldEditor.Environment
 
         public TerrainAdaptationData()
         {
-            lastUpdateTime = Time.time;
+            lastUpdateTime = 0f; // 初始化为0，在运行时再设置
         }
     }
 
