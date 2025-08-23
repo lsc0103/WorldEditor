@@ -62,6 +62,17 @@ namespace WorldEditor.Environment
 
         #endregion
 
+        #region 光照控制
+
+        [Header("光照控制")]
+        [Tooltip("太阳光源 (Directional Light)")]
+        public Light sunLight;
+        
+        [Tooltip("是否自动控制太阳光")]
+        public bool controlSunLight = true;
+
+        #endregion
+
         #region 运行时状态
 
         private bool isInitialized = false;
@@ -145,6 +156,9 @@ namespace WorldEditor.Environment
 
             // 同步到环境状态
             SyncToEnvironmentState();
+
+            // 查找并设置太阳光
+            SetupSunLight();
 
             // 启动时间更新
             isActive = true;
@@ -347,6 +361,103 @@ namespace WorldEditor.Environment
             
             // 同步到环境状态
             SyncToEnvironmentState();
+            
+            // 更新太阳光
+            UpdateSunLight();
+        }
+
+        /// <summary>
+        /// 设置太阳光引用
+        /// </summary>
+        private void SetupSunLight()
+        {
+            if (sunLight == null)
+            {
+                // 自动查找场景中的Directional Light
+                Light[] lights = FindObjectsByType<Light>(FindObjectsSortMode.None);
+                foreach (Light light in lights)
+                {
+                    if (light.type == LightType.Directional)
+                    {
+                        sunLight = light;
+                        Debug.Log($"[TimeSystem] 自动找到太阳光: {sunLight.name}");
+                        break;
+                    }
+                }
+            }
+            
+            if (sunLight == null)
+            {
+                Debug.LogWarning("[TimeSystem] 未找到Directional Light，无法控制太阳光");
+                controlSunLight = false;
+            }
+        }
+
+        /// <summary>
+        /// 更新太阳光照
+        /// </summary>
+        private void UpdateSunLight()
+        {
+            if (!controlSunLight || sunLight == null) return;
+
+            // 计算太阳角度 (-90度到90度，0度为正午)
+            float sunAngle = GetSunAngle();
+            
+            // 设置太阳光方向
+            Vector3 sunDirection = Quaternion.Euler(sunAngle, 0, 0) * Vector3.forward;
+            sunLight.transform.rotation = Quaternion.LookRotation(sunDirection);
+            
+            // 设置太阳光颜色和强度
+            UpdateSunLightColor();
+        }
+
+        /// <summary>
+        /// 更新太阳光颜色和强度
+        /// </summary>
+        private void UpdateSunLightColor()
+        {
+            if (sunLight == null) return;
+
+            Color sunColor = Color.white;
+            float intensity = 1f;
+            
+            // 根据时间调整颜色
+            if (currentTime < 0.25f || currentTime > 0.75f) // 夜晚
+            {
+                intensity = 0.1f;
+                sunColor = new Color(0.5f, 0.5f, 0.8f); // 月光色
+            }
+            else if (currentTime < 0.35f || currentTime > 0.65f) // 日出日落
+            {
+                intensity = 0.6f;
+                sunColor = new Color(1f, 0.7f, 0.4f); // 橙红色
+            }
+            else // 白天
+            {
+                intensity = 1f;
+                sunColor = new Color(1f, 0.95f, 0.8f); // 温暖白色
+            }
+            
+            // 根据季节微调
+            switch (currentSeason)
+            {
+                case SeasonType.Spring:
+                    sunColor = Color.Lerp(sunColor, new Color(1f, 1f, 0.9f), 0.2f);
+                    break;
+                case SeasonType.Summer:
+                    intensity *= 1.1f;
+                    break;
+                case SeasonType.Autumn:
+                    sunColor = Color.Lerp(sunColor, new Color(1f, 0.8f, 0.6f), 0.3f);
+                    break;
+                case SeasonType.Winter:
+                    intensity *= 0.8f;
+                    sunColor = Color.Lerp(sunColor, new Color(0.9f, 0.9f, 1f), 0.2f);
+                    break;
+            }
+            
+            sunLight.color = sunColor;
+            sunLight.intensity = intensity;
         }
 
         /// <summary>
