@@ -54,6 +54,7 @@ namespace WorldEditor.Environment
 
         [Header("环境子系统")]
         [SerializeField] private TimeSystem timeSystem;
+        [SerializeField] private SeasonSystem seasonSystem;
         [SerializeField] private LightingSystem lightingSystem;
         [SerializeField] private SkySystem skySystem;
         [SerializeField] private WeatherSystem weatherSystem;
@@ -141,6 +142,16 @@ namespace WorldEditor.Environment
                 if (timeSystem == null)
                 {
                     timeSystem = gameObject.AddComponent<TimeSystem>();
+                }
+            }
+
+            // 设置季节系统引用
+            if (seasonSystem == null)
+            {
+                seasonSystem = GetComponent<SeasonSystem>();
+                if (seasonSystem == null)
+                {
+                    seasonSystem = gameObject.AddComponent<SeasonSystem>();
                 }
             }
 
@@ -309,6 +320,13 @@ namespace WorldEditor.Environment
             }
             timeSystem.Initialize(currentState);
 
+            // 初始化季节系统
+            if (seasonSystem == null)
+            {
+                seasonSystem = GetComponent<SeasonSystem>() ?? gameObject.AddComponent<SeasonSystem>();
+            }
+            seasonSystem.Initialize(currentState, timeSystem);
+
             // 初始化其他子系统（如果存在）
             if (lightingSystem == null)
             {
@@ -330,7 +348,7 @@ namespace WorldEditor.Environment
                 waterSystem = GetComponent<WaterSystem>();
             }
 
-            Debug.Log($"[EnvironmentManager] 环境子系统初始化完成 - TimeSystem: {timeSystem != null}");
+            Debug.Log($"[EnvironmentManager] 环境子系统初始化完成 - TimeSystem: {timeSystem != null}, SeasonSystem: {seasonSystem != null}");
         }
 
         /// <summary>
@@ -388,14 +406,15 @@ namespace WorldEditor.Environment
         /// <param name="season">季节类型</param>
         public void SetSeason(SeasonType season)
         {
-            var previousSeason = currentState.currentSeason;
-            currentState.currentSeason = season;
-            
-            if (previousSeason != season)
+            if (seasonSystem != null)
             {
-                OnSeasonChanged?.Invoke(season);
-                Debug.Log($"[EnvironmentManager] 季节从 {previousSeason} 变更为 {season}");
+                seasonSystem.SetSeason(season);
             }
+            
+            // 同步到当前状态
+            currentState.currentSeason = season;
+            OnSeasonChanged?.Invoke(season);
+            Debug.Log($"[EnvironmentManager] 季节设置为 {season}");
         }
 
         /// <summary>
