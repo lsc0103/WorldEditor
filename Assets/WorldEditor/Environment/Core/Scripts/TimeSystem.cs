@@ -290,6 +290,42 @@ namespace WorldEditor.Environment
             SetSeason(nextSeason);
         }
 
+        /// <summary>
+        /// 设置为春天
+        /// </summary>
+        [ContextMenu("设置春天")]
+        public void SetSpring()
+        {
+            SetSeason(SeasonType.Spring);
+        }
+
+        /// <summary>
+        /// 设置为夏天
+        /// </summary>
+        [ContextMenu("设置夏天")]
+        public void SetSummer()
+        {
+            SetSeason(SeasonType.Summer);
+        }
+
+        /// <summary>
+        /// 设置为秋天
+        /// </summary>
+        [ContextMenu("设置秋天")]
+        public void SetAutumn()
+        {
+            SetSeason(SeasonType.Autumn);
+        }
+
+        /// <summary>
+        /// 设置为冬天
+        /// </summary>
+        [ContextMenu("设置冬天")]
+        public void SetWinter()
+        {
+            SetSeason(SeasonType.Winter);
+        }
+
         #endregion
 
         #region 系统更新
@@ -371,24 +407,33 @@ namespace WorldEditor.Environment
         /// </summary>
         private void SetupSunLight()
         {
+            Debug.Log("[TimeSystem] 开始查找太阳光...");
+            
             if (sunLight == null)
             {
                 // 自动查找场景中的Directional Light
                 Light[] lights = FindObjectsByType<Light>(FindObjectsSortMode.None);
+                Debug.Log($"[TimeSystem] 找到 {lights.Length} 个光源");
+                
                 foreach (Light light in lights)
                 {
+                    Debug.Log($"[TimeSystem] 检查光源: {light.name}, 类型: {light.type}");
                     if (light.type == LightType.Directional)
                     {
                         sunLight = light;
-                        Debug.Log($"[TimeSystem] 自动找到太阳光: {sunLight.name}");
+                        Debug.Log($"[TimeSystem] ✅ 自动找到太阳光: {sunLight.name}");
                         break;
                     }
                 }
             }
+            else
+            {
+                Debug.Log($"[TimeSystem] ✅ 使用已设置的太阳光: {sunLight.name}");
+            }
             
             if (sunLight == null)
             {
-                Debug.LogWarning("[TimeSystem] 未找到Directional Light，无法控制太阳光");
+                Debug.LogWarning("[TimeSystem] ❌ 未找到Directional Light，无法控制太阳光");
                 controlSunLight = false;
             }
         }
@@ -421,43 +466,53 @@ namespace WorldEditor.Environment
             Color sunColor = Color.white;
             float intensity = 1f;
             
-            // 根据时间调整颜色
-            if (currentTime < 0.25f || currentTime > 0.75f) // 夜晚
+            // 根据时间调整颜色 - 更真实的色彩
+            if (currentTime < 0.2f || currentTime > 0.8f) // 深夜 (20:00-4:00)
             {
-                intensity = 0.1f;
-                sunColor = new Color(0.5f, 0.5f, 0.8f); // 月光色
+                intensity = 0.05f;
+                sunColor = new Color(0.3f, 0.4f, 0.7f); // 深蓝月光
             }
-            else if (currentTime < 0.35f || currentTime > 0.65f) // 日出日落
+            else if (currentTime < 0.3f) // 日出 (4:00-7:00)
             {
-                intensity = 0.6f;
-                sunColor = new Color(1f, 0.7f, 0.4f); // 橙红色
+                float t = (currentTime - 0.2f) / 0.1f; // 0-1
+                intensity = Mathf.Lerp(0.1f, 0.8f, t);
+                sunColor = Color.Lerp(new Color(1f, 0.4f, 0.2f), new Color(1f, 0.9f, 0.7f), t); // 红→金黄
             }
-            else // 白天
+            else if (currentTime < 0.7f) // 白天 (7:00-17:00)
             {
                 intensity = 1f;
-                sunColor = new Color(1f, 0.95f, 0.8f); // 温暖白色
+                sunColor = new Color(1f, 0.98f, 0.9f); // 自然白光
+            }
+            else // 日落 (17:00-20:00)
+            {
+                float t = (currentTime - 0.7f) / 0.1f; // 0-1
+                intensity = Mathf.Lerp(1f, 0.1f, t);
+                sunColor = Color.Lerp(new Color(1f, 0.9f, 0.7f), new Color(1f, 0.3f, 0.1f), t); // 金黄→深红
             }
             
-            // 根据季节微调
+            // 季节微调 - 更细微的变化
             switch (currentSeason)
             {
                 case SeasonType.Spring:
-                    sunColor = Color.Lerp(sunColor, new Color(1f, 1f, 0.9f), 0.2f);
+                    sunColor = Color.Lerp(sunColor, new Color(1f, 1f, 0.95f), 0.1f);
                     break;
                 case SeasonType.Summer:
-                    intensity *= 1.1f;
+                    intensity *= 1.05f;
+                    sunColor = Color.Lerp(sunColor, new Color(1f, 0.99f, 0.88f), 0.1f);
                     break;
                 case SeasonType.Autumn:
-                    sunColor = Color.Lerp(sunColor, new Color(1f, 0.8f, 0.6f), 0.3f);
+                    sunColor = Color.Lerp(sunColor, new Color(1f, 0.85f, 0.65f), 0.15f);
                     break;
                 case SeasonType.Winter:
-                    intensity *= 0.8f;
-                    sunColor = Color.Lerp(sunColor, new Color(0.9f, 0.9f, 1f), 0.2f);
+                    intensity *= 0.9f;
+                    sunColor = Color.Lerp(sunColor, new Color(0.95f, 0.95f, 1f), 0.1f);
                     break;
             }
             
             sunLight.color = sunColor;
             sunLight.intensity = intensity;
+            
+            Debug.Log($"[TimeSystem] 更新太阳光 - 时间:{currentTime:F2}, 强度:{intensity:F2}, 颜色:{sunColor}");
         }
 
         /// <summary>
