@@ -159,7 +159,14 @@ namespace WorldEditor.Environment
             }
 
             // 执行初始光照更新
-            UpdateLighting();
+            if (linkedEnvironmentState != null)
+            {
+                SetTimeOfDay(linkedEnvironmentState.timeOfDay);
+            }
+            else
+            {
+                SetTimeOfDay(currentTimeOfDay);
+            }
 
             isActive = true;
             isInitialized = true;
