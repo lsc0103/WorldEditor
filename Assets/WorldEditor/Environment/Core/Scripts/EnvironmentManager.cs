@@ -124,6 +124,45 @@ namespace WorldEditor.Environment
             {
                 currentState = new EnvironmentState();
             }
+            
+            // 在Awake中就设置组件引用，这样Edit模式也能看到
+            SetupComponentReferences();
+        }
+
+        /// <summary>
+        /// 设置组件引用（Edit模式和Play模式都可用）
+        /// </summary>
+        private void SetupComponentReferences()
+        {
+            // 设置时间系统引用
+            if (timeSystem == null)
+            {
+                timeSystem = GetComponent<TimeSystem>();
+                if (timeSystem == null)
+                {
+                    timeSystem = gameObject.AddComponent<TimeSystem>();
+                }
+            }
+
+            // 设置地形适配器引用
+            if (terrainAdapter == null)
+            {
+                terrainAdapter = GetComponent<EnvironmentTerrainAdapter>();
+                if (terrainAdapter == null)
+                {
+                    terrainAdapter = gameObject.AddComponent<EnvironmentTerrainAdapter>();
+                }
+            }
+
+            // 查找其他子系统（如果存在）
+            if (lightingSystem == null)
+                lightingSystem = GetComponent<LightingSystem>();
+            if (skySystem == null)
+                skySystem = GetComponent<SkySystem>();
+            if (weatherSystem == null)
+                weatherSystem = GetComponent<WeatherSystem>();
+            if (waterSystem == null)
+                waterSystem = GetComponent<WaterSystem>();
         }
 
         void Start()
@@ -132,6 +171,23 @@ namespace WorldEditor.Environment
             {
                 Initialize();
             }
+        }
+
+        /// <summary>
+        /// Unity Reset方法 - 在Inspector中添加组件时自动调用
+        /// </summary>
+        void Reset()
+        {
+            // 创建默认环境状态
+            if (currentState == null)
+            {
+                currentState = new EnvironmentState();
+            }
+            
+            // 设置组件引用
+            SetupComponentReferences();
+            
+            Debug.Log("[EnvironmentManager] Reset - 组件引用已自动设置");
         }
 
         /// <summary>
