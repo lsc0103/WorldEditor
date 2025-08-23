@@ -313,7 +313,7 @@ namespace WorldEditor.Environment
         /// </summary>
         public string GetDetailedTimeString()
         {
-            return $"{GetTimeString()} - 第{daysPassed}天 - {currentSeason} ({seasonProgress * 100:F0}%)";
+            return $"{GetTimeString()} - 第{daysPassed}天";
         }
 
         /// <summary>
