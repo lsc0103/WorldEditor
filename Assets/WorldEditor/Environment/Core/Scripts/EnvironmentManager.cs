@@ -253,7 +253,28 @@ namespace WorldEditor.Environment
             }
             timeSystem.Initialize(currentState);
 
-            Debug.Log("[EnvironmentManager] 环境子系统初始化完成");
+            // 初始化其他子系统（如果存在）
+            if (lightingSystem == null)
+            {
+                lightingSystem = GetComponent<LightingSystem>();
+            }
+            
+            if (skySystem == null)
+            {
+                skySystem = GetComponent<SkySystem>();
+            }
+            
+            if (weatherSystem == null)
+            {
+                weatherSystem = GetComponent<WeatherSystem>();
+            }
+            
+            if (waterSystem == null)
+            {
+                waterSystem = GetComponent<WaterSystem>();
+            }
+
+            Debug.Log($"[EnvironmentManager] 环境子系统初始化完成 - TimeSystem: {timeSystem != null}");
         }
 
         /// <summary>
