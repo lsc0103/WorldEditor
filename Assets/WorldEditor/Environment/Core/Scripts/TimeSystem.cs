@@ -30,9 +30,6 @@ namespace WorldEditor.Environment
         [Tooltip("游戏开始时的时间 (0=午夜, 0.5=正午, 1=午夜)")]
         [Range(0f, 1f)]
         public float startTimeOfDay = 0.5f;
-        
-        [Tooltip("游戏开始时的季节")]
-        public SeasonType startSeason = SeasonType.Spring;
 
         #endregion
 
@@ -295,28 +292,6 @@ namespace WorldEditor.Environment
             Debug.Log($"[TimeSystem] 新的一天开始 - 第{daysPassed}天");
         }
 
-        /// <summary>
-        /// 更新季节进度
-        /// </summary>
-        private void UpdateSeasonProgress()
-        {
-            if (!enableSeasons || seasonLength <= 0) return;
-            
-            // 计算当前季节内的天数
-            float daysInCurrentSeason = daysPassed % (seasonLength * 4); // 4个季节
-            float daysInThisSeason = daysInCurrentSeason % seasonLength;
-            
-            // 更新季节进度
-            float previousProgress = seasonProgress;
-            seasonProgress = daysInThisSeason / seasonLength;
-            
-            // 检查是否需要切换季节
-            SeasonType calculatedSeason = GetSeasonFromDays(daysPassed);
-            if (calculatedSeason != currentSeason)
-            {
-                SetSeason(calculatedSeason);
-            }
-        }
 
         #endregion
 
@@ -355,24 +330,6 @@ namespace WorldEditor.Environment
             }
         }
 
-        /// <summary>
-        /// 根据天数计算季节
-        /// </summary>
-        private SeasonType GetSeasonFromDays(int days)
-        {
-            if (!enableSeasons) return SeasonType.Spring;
-            
-            int seasonIndex = Mathf.FloorToInt(days / seasonLength) % 4;
-            return (SeasonType)seasonIndex;
-        }
-
-        /// <summary>
-        /// 获取下一个季节
-        /// </summary>
-        private SeasonType GetNextSeason(SeasonType currentSeason)
-        {
-            return (SeasonType)(((int)currentSeason + 1) % 4);
-        }
 
         /// <summary>
         /// 同步到环境状态
@@ -382,8 +339,6 @@ namespace WorldEditor.Environment
             if (linkedEnvironmentState != null)
             {
                 linkedEnvironmentState.timeOfDay = currentTime;
-                linkedEnvironmentState.currentSeason = currentSeason;
-                linkedEnvironmentState.seasonProgress = seasonProgress;
                 linkedEnvironmentState.daysPassed = daysPassed;
             }
         }
@@ -418,8 +373,6 @@ namespace WorldEditor.Environment
             
             GUILayout.Label($"时间: {GetTimeString()}");
             GUILayout.Label($"天数: {daysPassed}");
-            GUILayout.Label($"季节: {currentSeason}");
-            GUILayout.Label($"季节进度: {seasonProgress * 100:F0}%");
             GUILayout.Label($"时间流速: {timeScale}x");
             GUILayout.Label($"状态: {(isPaused ? "暂停" : "运行")}");
             
