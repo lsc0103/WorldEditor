@@ -709,7 +709,7 @@ namespace WorldEditor.Environment
                     rb.AddForce(buoyancyForce);
                     
                     // 应用水阻力
-                    Vector3 dragForce = -rb.velocity * waterDrag * submersionRatio;
+                    Vector3 dragForce = -rb.linearVelocity * waterDrag * submersionRatio;
                     rb.AddForce(dragForce);
                 }
             }
