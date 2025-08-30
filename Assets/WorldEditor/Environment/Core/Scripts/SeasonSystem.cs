@@ -277,6 +277,8 @@ namespace WorldEditor.Environment
 
         void OnGUI()
         {
+            // 调试面板已禁用
+            /*
             if (!isInitialized || !Debug.isDebugBuild) return;
             
             // 显示季节系统调试信息
@@ -289,6 +291,7 @@ namespace WorldEditor.Environment
             GUILayout.Label($"自动变化: {(enableAutoSeason ? "开启" : "关闭")}");
             
             GUILayout.EndArea();
+            */
         }
 
         #endregion

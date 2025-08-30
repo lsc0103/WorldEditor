@@ -103,21 +103,21 @@ namespace WorldEditor.Placement
                             GameObject instance = Instantiate(prefab, testPos, Quaternion.identity);
                             instance.name = $"Test_{vegType}";
                             successCount++;
-                            Debug.Log($"[VegetationSystemTest] ✅ {vegType} - 成功 ({prefab.name})");
+                            Debug.Log($"[VegetationSystemTest] 成功 {vegType} - 成功 ({prefab.name})");
                         }
                         else
                         {
-                            Debug.LogWarning($"[VegetationSystemTest] ❌ {vegType} - 预制件引用为空");
+                            Debug.LogWarning($"[VegetationSystemTest] 失败 {vegType} - 预制件引用为空");
                         }
                     }
                     else
                     {
-                        Debug.LogWarning($"[VegetationSystemTest] ❌ {vegType} - 没有配置预制件");
+                        Debug.LogWarning($"[VegetationSystemTest] 失败 {vegType} - 没有配置预制件");
                     }
                 }
                 else
                 {
-                    Debug.LogWarning($"[VegetationSystemTest] ❌ {vegType} - 没有植被数据");
+                    Debug.LogWarning($"[VegetationSystemTest] 失败 {vegType} - 没有植被数据");
                 }
                 
                 index++;

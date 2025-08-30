@@ -140,12 +140,12 @@ namespace WorldEditor.Editor
             terrainTemplates = new TerrainTemplate[]
             {
                 // 自然地形 - 游戏级真实效果
-                new TerrainTemplate("平原草地", "广阔平坦的草原，远山环绕，适合开放世界游戏", "🌾", TerrainTemplateType.平原草地),
-                new TerrainTemplate("山脉雪峰", "高耸入云的雪山，分层明显的高山生态", "⛰️", TerrainTemplateType.山脉雪峰),
-                new TerrainTemplate("丘陵森林", "起伏温和的森林丘陵，层次丰富的植被分布", "🌲", TerrainTemplateType.丘陵森林),
-                new TerrainTemplate("河谷湿地", "蜿蜒河流穿越的湿润谷地，生机勃勃", "🏞️", TerrainTemplateType.河谷湿地),
-                new TerrainTemplate("沙漠戈壁", "广袤的沙漠景观，沙丘与岩石的组合", "🏜️", TerrainTemplateType.沙漠戈壁),
-                new TerrainTemplate("海岸悬崖", "壮观的海岸线，悬崖峭壁与海滩", "🌊", TerrainTemplateType.海岸悬崖),
+                new TerrainTemplate("平原草地", "广阔平坦的草原，远山环绕，适合开放世界游戏", "平", TerrainTemplateType.平原草地),
+                new TerrainTemplate("山脉雪峰", "高耸入云的雪山，分层明显的高山生态", "山", TerrainTemplateType.山脉雪峰),
+                new TerrainTemplate("丘陵森林", "起伏温和的森林丘陵，层次丰富的植被分布", "丘", TerrainTemplateType.丘陵森林),
+                new TerrainTemplate("河谷湿地", "蜿蜒河流穿越的湿润谷地，生机勃勃", "河", TerrainTemplateType.河谷湿地),
+                new TerrainTemplate("沙漠戈壁", "广袤的沙漠景观，沙丘与岩石的组合", "沙", TerrainTemplateType.沙漠戈壁),
+                new TerrainTemplate("海岸悬崖", "壮观的海岸线，悬崖峭壁与海滩", "海", TerrainTemplateType.海岸悬崖),
                 new TerrainTemplate("高原台地", "高海拔平台地形，开阔而神秘", "🗻", TerrainTemplateType.高原台地),
                 new TerrainTemplate("火山群岛", "活跃的火山地貌，熔岩与灰烬的世界", "🌋", TerrainTemplateType.火山群岛),
                 
@@ -157,9 +157,9 @@ namespace WorldEditor.Editor
                 
                 // 人工环境
                 new TerrainTemplate("农业区域", "现代化农田，规整的农作物种植区", "🚜", TerrainTemplateType.农业区域),
-                new TerrainTemplate("城市郊区", "城市边缘的住宅区，绿化与建筑并存", "🏘️", TerrainTemplateType.城市郊区),
+                new TerrainTemplate("城市郊区", "城市边缘的住宅区，绿化与建筑并存", "城", TerrainTemplateType.城市郊区),
                 new TerrainTemplate("工业园区", "现代工业区，混凝土与钢铁的世界", "🏭", TerrainTemplateType.工业园区),
-                new TerrainTemplate("度假村", "精心设计的旅游度假区，景观与设施完美结合", "🏖️", TerrainTemplateType.度假村)
+                new TerrainTemplate("度假村", "精心设计的旅游度假区，景观与设施完美结合", "度", TerrainTemplateType.度假村)
             };
         }
         
@@ -197,7 +197,7 @@ namespace WorldEditor.Editor
             // 画笔工具Tab
             bool brushTabSelected = currentTab == TabType.画笔工具;
             GUI.backgroundColor = brushTabSelected ? Color.cyan : Color.white;
-            if (GUILayout.Button("🖌️ 画笔工具", GUILayout.Height(30)))
+            if (GUILayout.Button("画笔工具", GUILayout.Height(30)))
             {
                 currentTab = TabType.画笔工具;
             }
@@ -205,7 +205,7 @@ namespace WorldEditor.Editor
             // 专业模板Tab
             bool templateTabSelected = currentTab == TabType.专业模板;
             GUI.backgroundColor = templateTabSelected ? Color.cyan : Color.white;
-            if (GUILayout.Button("🎯 专业模板", GUILayout.Height(30)))
+            if (GUILayout.Button("专业模板", GUILayout.Height(30)))
             {
                 currentTab = TabType.专业模板;
             }
@@ -237,13 +237,13 @@ namespace WorldEditor.Editor
                 alignment = TextAnchor.MiddleCenter
             };
             
-            GUILayout.Label("🎨 地形纹理绘制器", titleStyle);
+            GUILayout.Label("纹理绘制 地形纹理绘制器", titleStyle);
             GUILayout.Label("像画画一样绘制地形纹理", EditorStyles.centeredGreyMiniLabel);
             
             EditorGUILayout.Space();
             
             // 状态显示
-            string status = isPainting ? "🖌️ 绘制模式激活" : "⭕ 未激活";
+            string status = isPainting ? "画笔 绘制模式激活" : "未激活 未激活";
             Color statusColor = isPainting ? Color.green : Color.gray;
             
             GUI.color = statusColor;
@@ -256,20 +256,20 @@ namespace WorldEditor.Editor
         void DrawBrushSelection()
         {
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-            GUILayout.Label("🖌️ 选择画笔", EditorStyles.boldLabel);
+            GUILayout.Label("选择画笔", EditorStyles.boldLabel);
             
             // 准备所有画笔数据
             var brushData = new (string label, TextureBrushType type, Color color)[]
             {
                 ("🌱\n草地", TextureBrushType.草地, new Color(0.4f, 0.8f, 0.3f)),
-                ("🏜️\n沙漠", TextureBrushType.沙漠, new Color(0.8f, 0.7f, 0.4f)),
-                ("❄️\n雪地", TextureBrushType.雪地, new Color(0.9f, 0.9f, 1.0f)),
+                ("沙\n沙漠", TextureBrushType.沙漠, new Color(0.8f, 0.7f, 0.4f)),
+                ("雪\n雪地", TextureBrushType.雪地, new Color(0.9f, 0.9f, 1.0f)),
                 ("🪨\n岩石", TextureBrushType.岩石, new Color(0.5f, 0.5f, 0.5f)),
                 ("🟫\n泥土", TextureBrushType.泥土, new Color(0.6f, 0.4f, 0.2f)),
                 ("💧\n水面", TextureBrushType.水面, new Color(0.2f, 0.6f, 0.9f)),
-                ("🛤️\n石路", TextureBrushType.石路, new Color(0.7f, 0.7f, 0.6f)),
+                ("石\n石路", TextureBrushType.石路, new Color(0.7f, 0.7f, 0.6f)),
                 ("🍃\n苔藓", TextureBrushType.苔藓, new Color(0.2f, 0.5f, 0.2f)),
-                ("🎨\n自定义", TextureBrushType.自定义颜色, customColor),
+                ("纹理绘制\n自定义", TextureBrushType.自定义颜色, customColor),
                 ("🧽\n橡皮擦", TextureBrushType.橡皮擦, Color.white)
             };
             
@@ -299,7 +299,7 @@ namespace WorldEditor.Editor
             {
                 EditorGUILayout.Space();
                 EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-                GUILayout.Label("🎨 自定义颜色设置", EditorStyles.boldLabel);
+                GUILayout.Label("纹理绘制 自定义颜色设置", EditorStyles.boldLabel);
                 
                 EditorGUILayout.BeginHorizontal();
                 GUILayout.Label("选择颜色:", EditorStyles.miniLabel);
@@ -353,7 +353,7 @@ namespace WorldEditor.Editor
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
             
             // 模板页面标题
-            GUILayout.Label("🎯 专业地形模板 (新手推荐)", EditorStyles.boldLabel);
+            GUILayout.Label("专业地形模板 (新手推荐)", EditorStyles.boldLabel);
             
             EditorGUILayout.BeginHorizontal();
             GUILayout.Label("选择一个模板，一键应用到整个地形:", EditorStyles.miniLabel);
@@ -389,7 +389,7 @@ namespace WorldEditor.Editor
             }
             
             EditorGUILayout.Space();
-            EditorGUILayout.HelpBox("💡 提示: 应用模板后，您依然可以使用画笔工具进行细节调整", MessageType.Info);
+            EditorGUILayout.HelpBox("提示: 应用模板后，您依然可以使用画笔工具进行细节调整", MessageType.Info);
             
             EditorGUILayout.EndVertical();
         }
@@ -1116,7 +1116,7 @@ namespace WorldEditor.Editor
         void DrawBrushSettings()
         {
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-            GUILayout.Label("⚙️ 画笔设置", EditorStyles.boldLabel);
+            GUILayout.Label("设置 画笔设置", EditorStyles.boldLabel);
             
             brushSize = EditorGUILayout.Slider("画笔大小", brushSize, 1f, 50f);
             brushStrength = EditorGUILayout.Slider("绘制强度", brushStrength, 0.1f, 1.0f);
@@ -1131,7 +1131,7 @@ namespace WorldEditor.Editor
                 brushShape = BrushShape.圆形;
             if (DrawShapeButton("■", BrushShape.方形, "方形(柔边)"))
                 brushShape = BrushShape.方形;
-            if (DrawShapeButton("⚫", BrushShape.硬圆形, "圆形(硬边)"))
+            if (DrawShapeButton("●", BrushShape.硬圆形, "圆形(硬边)"))
                 brushShape = BrushShape.硬圆形;
             if (DrawShapeButton("⬛", BrushShape.硬方形, "方形(硬边)"))
                 brushShape = BrushShape.硬方形;
@@ -1169,7 +1169,7 @@ namespace WorldEditor.Editor
             }
             else
             {
-                EditorGUILayout.HelpBox($"✅ 目标地形: {targetTerrain.name}\n地形大小: {targetTerrain.terrainData.size}", MessageType.Info);
+                EditorGUILayout.HelpBox($" 目标地形: {targetTerrain.name}\n地形大小: {targetTerrain.terrainData.size}", MessageType.Info);
                 
                 // 显示地形基本信息
                 GUILayout.Label($"高度图分辨率: {targetTerrain.terrainData.heightmapResolution}x{targetTerrain.terrainData.heightmapResolution}", EditorStyles.miniLabel);
@@ -1182,7 +1182,7 @@ namespace WorldEditor.Editor
         void DrawControls()
         {
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-            GUILayout.Label("🎮 控制", EditorStyles.boldLabel);
+            GUILayout.Label("控制", EditorStyles.boldLabel);
             
             EditorGUILayout.BeginHorizontal();
             
@@ -1192,7 +1192,7 @@ namespace WorldEditor.Editor
                 if (!isPainting)
                 {
                     GUI.backgroundColor = Color.green;
-                    if (GUILayout.Button("🖌️ 激活绘制模式", GUILayout.Height(30)))
+                    if (GUILayout.Button("画笔 激活绘制模式", GUILayout.Height(30)))
                     {
                         isPainting = true;
                         Tools.hidden = true;
@@ -1204,7 +1204,7 @@ namespace WorldEditor.Editor
                 else
                 {
                     GUI.backgroundColor = Color.red;
-                    if (GUILayout.Button("⭕ 退出绘制模式", GUILayout.Height(30)))
+                    if (GUILayout.Button("未激活 退出绘制模式", GUILayout.Height(30)))
                     {
                         isPainting = false;
                         Tools.hidden = false;
@@ -1222,7 +1222,7 @@ namespace WorldEditor.Editor
             
             EditorGUILayout.EndHorizontal();
             
-            if (GUILayout.Button("🔄 重置地形纹理"))
+            if (GUILayout.Button("重置地形纹理"))
             {
                 if (targetTerrain != null && EditorUtility.DisplayDialog("确认重置", "这将清除地形上的所有纹理，确定继续吗？", "确定", "取消"))
                 {
@@ -1236,7 +1236,7 @@ namespace WorldEditor.Editor
         void DrawInstructions()
         {
             EditorGUILayout.BeginVertical(EditorStyles.helpBox);
-            GUILayout.Label("📖 使用说明", EditorStyles.boldLabel);
+            GUILayout.Label("使用说明", EditorStyles.boldLabel);
             
             EditorGUILayout.HelpBox(
                 "使用步骤:\n" +

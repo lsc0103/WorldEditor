@@ -36,7 +36,7 @@ namespace WorldEditor.Core
             logBuilder.AppendLine();
             
             // 基础GPU信息
-            logBuilder.AppendLine("📱 基础信息:");
+            logBuilder.AppendLine("基础信息:");
             logBuilder.AppendLine($"  GPU型号: {SystemInfo.graphicsDeviceName}");
             logBuilder.AppendLine($"  GPU厂商: {SystemInfo.graphicsDeviceVendor}");
             logBuilder.AppendLine($"  显存大小: {SystemInfo.graphicsMemorySize} MB");
@@ -50,30 +50,30 @@ namespace WorldEditor.Core
             
             if (isRTX)
             {
-                logBuilder.AppendLine("🎯 RTX显卡检测:");
-                logBuilder.AppendLine($"  RTX显卡: ✅ 是 ({SystemInfo.graphicsDeviceName})");
+                logBuilder.AppendLine("RTX显卡检测:");
+                logBuilder.AppendLine($"  RTX显卡: 是 ({SystemInfo.graphicsDeviceName})");
                 
                 if (is4070ti)
                 {
-                    logBuilder.AppendLine("  RTX 4070 Ti: ✅ 检测到！");
-                    logBuilder.AppendLine("  预期性能等级: 🚀 极高 (适合4K地形生成)");
+                    logBuilder.AppendLine("  RTX 4070 Ti: 检测到！");
+                    logBuilder.AppendLine("  预期性能等级: 极高 (适合4K地形生成)");
                 }
                 else
                 {
-                    logBuilder.AppendLine("  RTX系列: ✅ 支持高性能GPU加速");
+                    logBuilder.AppendLine("  RTX系列: 支持高性能GPU加速");
                 }
             }
             else
             {
-                logBuilder.AppendLine("🎯 RTX显卡检测:");
-                logBuilder.AppendLine("  RTX显卡: ❌ 否");
+                logBuilder.AppendLine("RTX显卡检测:");
+                logBuilder.AppendLine("  RTX显卡: 否");
             }
             logBuilder.AppendLine();
             
             // Compute Shader支持检测
-            logBuilder.AppendLine("⚙️ GPU加速能力:");
-            logBuilder.AppendLine($"  Compute Shader支持: {(SystemInfo.supportsComputeShaders ? "✅ 是" : "❌ 否")}");
-            logBuilder.AppendLine($"  RenderTexture支持: {(SystemInfo.supportsRenderTextures ? "✅ 是" : "❌ 否")}");
+            logBuilder.AppendLine("GPU加速能力:");
+            logBuilder.AppendLine($"  Compute Shader支持: {(SystemInfo.supportsComputeShaders ? "是" : "否")}");
+            logBuilder.AppendLine($"  RenderTexture支持: {(SystemInfo.supportsRenderTextures ? "是" : "否")}");
             logBuilder.AppendLine($"  最大Compute缓冲区: {SystemInfo.maxComputeBufferInputsCompute}");
             logBuilder.AppendLine($"  最大工作组X: {SystemInfo.maxComputeWorkGroupSizeX}");
             logBuilder.AppendLine($"  最大工作组Y: {SystemInfo.maxComputeWorkGroupSizeY}");
@@ -84,21 +84,21 @@ namespace WorldEditor.Core
             var accelEngine = AccelEngine.Instance;
             if (accelEngine != null)
             {
-                logBuilder.AppendLine("🔧 AccelEngine状态:");
-                logBuilder.AppendLine("  AccelEngine: ✅ 已初始化");
+                logBuilder.AppendLine("AccelEngine状态:");
+                logBuilder.AppendLine("  AccelEngine: 已初始化");
                 logBuilder.AppendLine($"  引擎状态: 运行正常");
                 logBuilder.AppendLine($"  队列任务: {accelEngine.GetQueuedTaskCount()}");
                 logBuilder.AppendLine($"  完成任务: {accelEngine.GetCompletedTaskCount()}");
             }
             else
             {
-                logBuilder.AppendLine("🔧 AccelEngine状态:");
-                logBuilder.AppendLine("  AccelEngine: ❌ 未初始化");
+                logBuilder.AppendLine("AccelEngine状态:");
+                logBuilder.AppendLine("  AccelEngine: 未初始化");
             }
             
             // 推荐设置
             logBuilder.AppendLine();
-            logBuilder.AppendLine("📋 推荐配置:");
+            logBuilder.AppendLine("推荐配置:");
             
             if (SystemInfo.graphicsMemorySize >= 12000) // RTX 4070ti 有12GB显存
             {
@@ -136,7 +136,7 @@ namespace WorldEditor.Core
             else
             {
                 UnityEngine.Debug.LogWarning("[GPUBenchmark] 性能测试需要在Play模式下运行");
-                benchmarkResults = "⚠️ 性能测试需要在Play模式下运行\n请点击Play按钮后再次测试";
+                benchmarkResults = "性能测试需要在Play模式下运行\n请点击Play按钮后再次测试";
             }
         }
         
@@ -153,7 +153,7 @@ namespace WorldEditor.Core
             logBuilder.AppendLine($"测试轮次: {benchmarkIterations}");
             logBuilder.AppendLine();
             
-            benchmarkResults = logBuilder.ToString() + "\n🔄 正在进行性能测试，请稍候...";
+            benchmarkResults = logBuilder.ToString() + "\n正在进行性能测试，请稍候...";
             
             // 测试1: Compute Shader噪声生成性能
             yield return StartCoroutine(BenchmarkNoiseGeneration());
@@ -169,12 +169,12 @@ namespace WorldEditor.Core
             
             if (SystemInfo.graphicsDeviceName.Contains("RTX"))
             {
-                logBuilder.AppendLine("🎯 您的RTX显卡非常适合WorldEditor的GPU加速！");
-                logBuilder.AppendLine("📈 建议启用所有GPU加速功能以获得最佳性能");
+                logBuilder.AppendLine("您的RTX显卡非常适合WorldEditor的GPU加速！");
+                logBuilder.AppendLine("建议启用所有GPU加速功能以获得最佳性能");
                 
                 if (SystemInfo.graphicsDeviceName.Contains("4070"))
                 {
-                    logBuilder.AppendLine("🔥 RTX 4070系列：顶级性能，支持大规模地形生成");
+                    logBuilder.AppendLine("RTX 4070系列：顶级性能，支持大规模地形生成");
                 }
             }
             
@@ -187,7 +187,7 @@ namespace WorldEditor.Core
         /// </summary>
         IEnumerator BenchmarkNoiseGeneration()
         {
-            logBuilder.AppendLine("📊 测试1: 噪声生成性能");
+            logBuilder.AppendLine("测试1: 噪声生成性能");
             
             // GPU测试
             var gpuTimer = Stopwatch.StartNew();
@@ -206,7 +206,7 @@ namespace WorldEditor.Core
                 
                 if (i % 3 == 0) // 每3次更新一次状态
                 {
-                    benchmarkResults = logBuilder.ToString() + $"\n🔄 GPU噪声测试进度: {i + 1}/{benchmarkIterations}";
+                    benchmarkResults = logBuilder.ToString() + $"\n正在处理 GPU噪声测试进度: {i + 1}/{benchmarkIterations}";
                 }
                 
                 yield return null;
@@ -225,7 +225,7 @@ namespace WorldEditor.Core
                 
                 if (i % 3 == 0)
                 {
-                    benchmarkResults = logBuilder.ToString() + $"\n🔄 CPU噪声测试进度: {i + 1}/{benchmarkIterations}";
+                    benchmarkResults = logBuilder.ToString() + $"\n正在处理 CPU噪声测试进度: {i + 1}/{benchmarkIterations}";
                 }
                 
                 yield return null;
@@ -243,15 +243,15 @@ namespace WorldEditor.Core
             
             if (speedup > 100)
             {
-                logBuilder.AppendLine($"  🚀 极佳！您的{SystemInfo.graphicsDeviceName}提供了{speedup:F0}倍性能提升");
+                logBuilder.AppendLine($"  极佳！您的{SystemInfo.graphicsDeviceName}提供了{speedup:F0}倍性能提升");
             }
             else if (speedup > 10)
             {
-                logBuilder.AppendLine($"  ✅ 优秀！GPU加速效果显著");
+                logBuilder.AppendLine($"  优秀！GPU加速效果显著");
             }
             else
             {
-                logBuilder.AppendLine($"  ⚠️ 性能提升有限，检查GPU驱动和设置");
+                logBuilder.AppendLine($"  性能提升有限，检查GPU驱动和设置");
             }
             
             logBuilder.AppendLine();
@@ -262,7 +262,7 @@ namespace WorldEditor.Core
         /// </summary>
         IEnumerator BenchmarkStampProcessing()
         {
-            logBuilder.AppendLine("📊 测试2: 印章处理性能");
+            logBuilder.AppendLine("测试2: 印章处理性能");
             
             int stampSize = benchmarkResolution / 4;
             
@@ -274,7 +274,7 @@ namespace WorldEditor.Core
                 // 模拟GPU印章处理
                 yield return StartCoroutine(SimulateGPUStampProcessing(stampSize));
                 
-                benchmarkResults = logBuilder.ToString() + $"\n🔄 GPU印章测试进度: {i + 1}/{benchmarkIterations}";
+                benchmarkResults = logBuilder.ToString() + $"\n正在处理 GPU印章测试进度: {i + 1}/{benchmarkIterations}";
                 
                 yield return null;
             }
@@ -290,7 +290,7 @@ namespace WorldEditor.Core
                 // 模拟CPU印章处理
                 SimulateCPUStampProcessing(stampSize);
                 
-                benchmarkResults = logBuilder.ToString() + $"\n🔄 CPU印章测试进度: {i + 1}/{benchmarkIterations}";
+                benchmarkResults = logBuilder.ToString() + $"\n正在处理 CPU印章测试进度: {i + 1}/{benchmarkIterations}";
                 
                 yield return null;
             }
@@ -311,7 +311,7 @@ namespace WorldEditor.Core
         /// </summary>
         IEnumerator BenchmarkMemoryBandwidth()
         {
-            logBuilder.AppendLine("📊 测试3: 显存带宽测试");
+            logBuilder.AppendLine("测试3: 显存带宽测试");
             
             var timer = Stopwatch.StartNew();
             
@@ -340,15 +340,15 @@ namespace WorldEditor.Core
             
             if (bandwidthScore > 50)
             {
-                logBuilder.AppendLine("  🔥 显存带宽: 极佳 (适合4K地形)");
+                logBuilder.AppendLine("  显存带宽: 极佳 (适合4K地形)");
             }
             else if (bandwidthScore > 20)
             {
-                logBuilder.AppendLine("  ✅ 显存带宽: 良好 (适合2K地形)");
+                logBuilder.AppendLine("  显存带宽: 良好 (适合2K地形)");
             }
             else
             {
-                logBuilder.AppendLine("  ⚠️ 显存带宽: 一般 (推荐1K地形)");
+                logBuilder.AppendLine("  显存带宽: 一般 (推荐1K地形)");
             }
             
             logBuilder.AppendLine();

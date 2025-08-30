@@ -574,7 +574,7 @@ namespace WorldEditor.Editor
         
         void DrawVegetationSystem()
         {
-            showVegetationSettings = EditorGUILayout.Foldout(showVegetationSettings, "🌿 植被系统", true);
+            showVegetationSettings = EditorGUILayout.Foldout(showVegetationSettings, "植被系统", true);
             
             if (showVegetationSettings)
             {
@@ -620,7 +620,7 @@ namespace WorldEditor.Editor
                 if (!placementSystem.IsVegetationPainting)
                 {
                     GUI.backgroundColor = Color.green;
-                    if (GUILayout.Button("🌱 激活植被绘制", GUILayout.Height(30)))
+                    if (GUILayout.Button("激活植被绘制", GUILayout.Height(30)))
                     {
                         placementSystem.ActivateVegetationPainting(true);
                         Tools.hidden = true;
@@ -630,7 +630,7 @@ namespace WorldEditor.Editor
                 else
                 {
                     GUI.backgroundColor = Color.red;
-                    if (GUILayout.Button("⭕ 退出绘制模式", GUILayout.Height(30)))
+                    if (GUILayout.Button("退出绘制模式", GUILayout.Height(30)))
                     {
                         placementSystem.ActivateVegetationPainting(false);
                         Tools.hidden = false;
@@ -642,7 +642,7 @@ namespace WorldEditor.Editor
                 
                 EditorGUILayout.BeginHorizontal();
                 
-                if (GUILayout.Button("🗑️ 清除所有植被"))
+                if (GUILayout.Button("清除所有植被"))
                 {
                     if (EditorUtility.DisplayDialog("确认清除", "这将删除地形上的所有植被，确定继续吗？", "确定", "取消"))
                     {
@@ -650,7 +650,7 @@ namespace WorldEditor.Editor
                     }
                 }
                 
-                if (GUILayout.Button("📊 植被统计"))
+                if (GUILayout.Button("植被统计"))
                 {
                     ShowVegetationStatistics();
                 }
@@ -658,25 +658,25 @@ namespace WorldEditor.Editor
                 EditorGUILayout.EndHorizontal();
                 
                 // 添加快速植被选择按钮
-                EditorGUILayout.LabelField("🚀 快速选择:", EditorStyles.boldLabel);
+                EditorGUILayout.LabelField("快速选择:", EditorStyles.boldLabel);
                 EditorGUILayout.BeginHorizontal();
                 
                 // 快速选择针叶树（北欧云杉）
-                if (GUILayout.Button("🌲 北欧云杉", GUILayout.Height(25)))
+                if (GUILayout.Button("北欧云杉", GUILayout.Height(25)))
                 {
                     selectedVegetationType = VegetationType.针叶树;
                     placementSystem.SetSelectedVegetationType(VegetationType.针叶树);
                 }
                 
                 // 快速选择阔叶树
-                if (GUILayout.Button("🌳 橡树", GUILayout.Height(25)))
+                if (GUILayout.Button("橡树", GUILayout.Height(25)))
                 {
                     selectedVegetationType = VegetationType.阔叶树;
                     placementSystem.SetSelectedVegetationType(VegetationType.阔叶树);
                 }
                 
                 // 快速选择野草
-                if (GUILayout.Button("🌾 野草", GUILayout.Height(25)))
+                if (GUILayout.Button("野草", GUILayout.Height(25)))
                 {
                     selectedVegetationType = VegetationType.野草;
                     placementSystem.SetSelectedVegetationType(VegetationType.野草);
@@ -726,8 +726,8 @@ namespace WorldEditor.Editor
                     
                     if (isSelected) GUI.backgroundColor = Color.cyan;
                     
-                    string emoji = vegetationLib.GetVegetationEmoji(vegData.type);
-                    if (GUILayout.Button($"{emoji}\n{vegData.displayName}", GUILayout.Width(70), GUILayout.Height(50)))
+                    string displayIcon = "■"; // 使用简单方块代替emoji
+                    if (GUILayout.Button($"{displayIcon}\n{vegData.displayName}", GUILayout.Width(70), GUILayout.Height(50)))
                     {
                         selectedVegetationType = vegData.type;
                         placementSystem.SetSelectedVegetationType(vegData.type);
@@ -752,17 +752,17 @@ namespace WorldEditor.Editor
             
             // 快速预设按钮
             EditorGUILayout.BeginHorizontal();
-            if (GUILayout.Button("🎯 精确放置", GUILayout.Height(20)))
+            if (GUILayout.Button("精确放置", GUILayout.Height(20)))
             {
                 vegetationBrushSize = 3f;
                 vegetationDensity = 0.2f;
             }
-            if (GUILayout.Button("🖌️ 标准画笔", GUILayout.Height(20)))
+            if (GUILayout.Button("标准画笔", GUILayout.Height(20)))
             {
                 vegetationBrushSize = 10f;
                 vegetationDensity = 0.5f;
             }
-            if (GUILayout.Button("🌊 大面积填充", GUILayout.Height(20)))
+            if (GUILayout.Button("大面积填充", GUILayout.Height(20)))
             {
                 vegetationBrushSize = 25f;
                 vegetationDensity = 1.0f;
@@ -794,7 +794,7 @@ namespace WorldEditor.Editor
             EditorGUILayout.BeginHorizontal();
             foreach (var template in templates.Take(3)) // 显示前3个模板
             {
-                if (GUILayout.Button($"🎯\n{template.templateName}", GUILayout.Height(40)))
+                if (GUILayout.Button($"{template.templateName}", GUILayout.Height(40)))
                 {
                     if (targetTerrain != null)
                     {
@@ -816,7 +816,7 @@ namespace WorldEditor.Editor
             EditorGUILayout.BeginHorizontal();
             foreach (var template in templates.Skip(3).Take(3)) // 显示后3个模板
             {
-                if (GUILayout.Button($"🎯\n{template.templateName}", GUILayout.Height(40)))
+                if (GUILayout.Button($"{template.templateName}", GUILayout.Height(40)))
                 {
                     if (targetTerrain != null)
                     {

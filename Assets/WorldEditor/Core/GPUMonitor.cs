@@ -143,6 +143,8 @@ namespace WorldEditor.Core
         /// </summary>
         void OnGUI()
         {
+            // 调试面板已禁用
+            /*
             if (!showOnScreen) return;
             
             if (boxStyle == null) InitializeGUIStyles();
@@ -153,7 +155,7 @@ namespace WorldEditor.Core
             GUILayout.BeginArea(new Rect(panelRect.x + 10, panelRect.y + 10, panelRect.width - 20, panelRect.height - 20));
             
             // 标题
-            GUILayout.Label("🚀 WorldEditor GPU Monitor", headerStyle);
+            GUILayout.Label("WorldEditor GPU Monitor", headerStyle);
             GUILayout.Space(5);
             
             // GPU基础信息
@@ -161,7 +163,7 @@ namespace WorldEditor.Core
             GUILayout.Label($"显存: {SystemInfo.graphicsMemorySize} MB", labelStyle);
             
             // 实时状态
-            string gpuStatus = isGPUActive ? "🟢 GPU 活跃" : "⚪ GPU 待机";
+            string gpuStatus = isGPUActive ? "GPU 活跃" : "GPU 待机";
             GUILayout.Label($"状态: {gpuStatus}", labelStyle);
             
             GUILayout.Space(5);
@@ -170,7 +172,7 @@ namespace WorldEditor.Core
             var accelEngine = AccelEngine.Instance;
             if (accelEngine != null)
             {
-                GUILayout.Label("📊 AccelEngine 状态:", headerStyle);
+                GUILayout.Label("AccelEngine 状态:", headerStyle);
                 GUILayout.Label($"队列任务: {accelEngine.GetQueuedTaskCount()}", labelStyle);
                 GUILayout.Label($"完成任务: {accelEngine.GetCompletedTaskCount()}", labelStyle);
                 
@@ -190,7 +192,7 @@ namespace WorldEditor.Core
                 float avgFrameTime = (float)frameTimeHistory.Average();
                 float fps = 1000f / avgFrameTime;
                 
-                GUILayout.Label("📈 性能指标:", headerStyle);
+                GUILayout.Label("性能指标:", headerStyle);
                 GUILayout.Label($"FPS: {fps:F1}", labelStyle);
                 GUILayout.Label($"帧时间: {avgFrameTime:F2} ms", labelStyle);
                 
@@ -200,17 +202,17 @@ namespace WorldEditor.Core
                 
                 if (fps >= 60)
                 {
-                    perfLevel = "🔥 极佳";
+                    perfLevel = "极佳";
                     perfColor = Color.green;
                 }
                 else if (fps >= 30)
                 {
-                    perfLevel = "✅ 良好";
+                    perfLevel = "良好";
                     perfColor = Color.yellow;
                 }
                 else
                 {
-                    perfLevel = "⚠️ 需优化";
+                    perfLevel = "需优化";
                     perfColor = Color.red;
                 }
                 
@@ -225,10 +227,10 @@ namespace WorldEditor.Core
             // RTX特殊标识
             if (SystemInfo.graphicsDeviceName.Contains("RTX"))
             {
-                string rtxInfo = "🎯 RTX 加速就绪";
+                string rtxInfo = "RTX 加速就绪";
                 if (SystemInfo.graphicsDeviceName.Contains("4070"))
                 {
-                    rtxInfo = "🔥 RTX 4070 顶级性能";
+                    rtxInfo = "RTX 4070 顶级性能";
                 }
                 
                 var oldColor = labelStyle.normal.textColor;
@@ -240,7 +242,7 @@ namespace WorldEditor.Core
             // 操作按钮
             GUILayout.Space(10);
             
-            if (GUILayout.Button("🧪 运行GPU基准测试"))
+            if (GUILayout.Button("运行GPU基准测试"))
             {
                 var benchmark = FindFirstObjectByType<GPUBenchmark>();
                 if (benchmark != null)
@@ -253,7 +255,7 @@ namespace WorldEditor.Core
                 }
             }
             
-            if (GUILayout.Button("📊 显示AccelEngine状态"))
+            if (GUILayout.Button("显示AccelEngine状态"))
             {
                 if (accelEngine != null)
                 {
@@ -262,6 +264,7 @@ namespace WorldEditor.Core
             }
             
             GUILayout.EndArea();
+            */
         }
         
         /// <summary>

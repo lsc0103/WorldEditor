@@ -212,39 +212,39 @@ namespace WorldEditor.Testing
             
             if (targetTerrain == null)
             {
-                Debug.LogError("[VegetationSystemTest] ❌ 目标地形未设置");
+                Debug.LogError("[VegetationSystemTest] 错误 目标地形未设置");
             }
             else
             {
-                Debug.Log($"[VegetationSystemTest] ✅ 目标地形: {targetTerrain.name}");
+                Debug.Log($"[VegetationSystemTest] 成功 目标地形: {targetTerrain.name}");
                 Debug.Log($"[VegetationSystemTest] 地形大小: {targetTerrain.terrainData.size}");
             }
             
             if (placementSystem == null)
             {
-                Debug.LogError("[VegetationSystemTest] ❌ 智能放置系统未设置");
+                Debug.LogError("[VegetationSystemTest] 错误 智能放置系统未设置");
             }
             else
             {
-                Debug.Log($"[VegetationSystemTest] ✅ 智能放置系统: {placementSystem.name}");
+                Debug.Log($"[VegetationSystemTest] 成功 智能放置系统: {placementSystem.name}");
                 Debug.Log($"[VegetationSystemTest] 植被绘制状态: {placementSystem.IsVegetationPainting}");
                 
                 if (placementSystem.VegetationSystem != null)
                 {
-                    Debug.Log($"[VegetationSystemTest] ✅ 植被系统已初始化");
+                    Debug.Log($"[VegetationSystemTest] 成功 植被系统已初始化");
                     
                     if (placementSystem.VegetationSystem.Library != null)
                     {
-                        Debug.Log($"[VegetationSystemTest] ✅ 植被库已加载，包含 {placementSystem.VegetationSystem.Library.vegetationTypes?.Count ?? 0} 种植被");
+                        Debug.Log($"[VegetationSystemTest] 成功 植被库已加载，包含 {placementSystem.VegetationSystem.Library.vegetationTypes?.Count ?? 0} 种植被");
                     }
                     else
                     {
-                        Debug.LogWarning("[VegetationSystemTest] ⚠️ 植被库未加载");
+                        Debug.LogWarning("[VegetationSystemTest] 警告 植被库未加载");
                     }
                 }
                 else
                 {
-                    Debug.LogError("[VegetationSystemTest] ❌ 植被系统未初始化");
+                    Debug.LogError("[VegetationSystemTest] 错误 植被系统未初始化");
                 }
             }
         }

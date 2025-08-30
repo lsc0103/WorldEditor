@@ -156,6 +156,8 @@ namespace WorldEditor.Core
         
         void OnGUI()
         {
+            // 调试面板已禁用
+            /*
             if (!enableDebugInfo) return;
             
             // 在屏幕上显示简单的状态信息
@@ -189,6 +191,7 @@ namespace WorldEditor.Core
             }
             
             GUILayout.EndArea();
+            */
         }
     }
 }

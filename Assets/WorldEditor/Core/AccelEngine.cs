@@ -15,16 +15,16 @@ namespace WorldEditor.Core
     /// 智能检测硬件能力，GPU优先，CPU回退
     /// 
     /// === 集成状态 ===
-    /// ✅ 核心引擎架构完成
-    /// ✅ 硬件能力检测系统
-    /// ✅ 任务队列和优先级管理
-    /// ✅ GPU/CPU智能回退机制
-    /// ✅ TerrainStamper集成完成
-    /// ✅ AdvancedTerrainGenerator集成完成
-    /// ✅ GPU Compute Shader支持
-    /// ✅ 噪声生成GPU加速
-    /// ✅ 侵蚀模拟GPU加速
-    /// ✅ AccelEngineManager管理器
+    /// 核心引擎架构完成
+    /// 硬件能力检测系统
+    /// 任务队列和优先级管理
+    /// GPU/CPU智能回退机制
+    /// TerrainStamper集成完成
+    /// AdvancedTerrainGenerator集成完成
+    /// GPU Compute Shader支持
+    /// 噪声生成GPU加速
+    /// 侵蚀模拟GPU加速
+    /// AccelEngineManager管理器
     /// 
     /// === 使用方法 ===
     /// 1. 在场景中添加AccelEngineManager组件
@@ -774,7 +774,7 @@ namespace WorldEditor.Core
             int totalPixels = resolution * resolution;
             int totalThreads = threadGroups * threadGroups * 64; // 8x8 per group
             
-            LogInfo($"🚀 GPU Compute Shader 分发:");
+            LogInfo($"GPU Compute Shader 分发:");
             LogInfo($"   分辨率: {resolution}x{resolution} ({totalPixels:N0} 像素)");
             LogInfo($"   线程组: {threadGroups}x{threadGroups} = {threadGroups * threadGroups} 组");
             LogInfo($"   GPU线程: {totalThreads:N0} 个并行线程");
@@ -799,7 +799,7 @@ namespace WorldEditor.Core
             
             // 详细性能日志
             LogGPUPerformance("噪声生成", totalTime, $"分辨率: {resolution}x{resolution}");
-            LogInfo($"🔥 GPU并行性能分析:");
+            LogInfo($"GPU并行性能分析:");
             LogInfo($"   设置时间: {setupTime:F2}ms");
             LogInfo($"   GPU计算: {gpuTime:F2}ms");
             LogInfo($"   处理速度: {megaPixelsPerSec:F2} MPixels/秒");
@@ -808,7 +808,7 @@ namespace WorldEditor.Core
             // RTX显卡特殊标注
             if (SystemInfo.graphicsDeviceName.Contains("RTX 4070"))
             {
-                LogInfo($"🎯 RTX 4070Ti 性能表现: {(megaPixelsPerSec > 100 ? "🔥 顶级" : megaPixelsPerSec > 50 ? "✅ 优秀" : "⚠️ 需优化")}");
+                LogInfo($"RTX 4070Ti 性能表现: {(megaPixelsPerSec > 100 ? "顶级" : megaPixelsPerSec > 50 ? "优秀" : "需优化")}");
             }
             
             // 清理资源
@@ -817,7 +817,7 @@ namespace WorldEditor.Core
                 resultTexture.Release();
             }
             
-            LogInfo("✅ Compute Shader 噪声生成完成");
+            LogInfo("Compute Shader 噪声生成完成");
             callback(true);
         }
         
@@ -869,7 +869,7 @@ namespace WorldEditor.Core
         {
             if (enableDebugLogging)
             {
-                string perfMsg = $"🚀 GPU性能: {operation} | 耗时: {timeMs:F2}ms";
+                string perfMsg = $"GPU性能: {operation} | 耗时: {timeMs:F2}ms";
                 if (!string.IsNullOrEmpty(details))
                 {
                     perfMsg += $" | {details}";
@@ -878,7 +878,7 @@ namespace WorldEditor.Core
                 // 添加GPU型号信息，特别标注RTX显卡
                 if (SystemInfo.graphicsDeviceName.Contains("RTX"))
                 {
-                    perfMsg += $" | GPU: {SystemInfo.graphicsDeviceName} 🔥";
+                    perfMsg += $" | GPU: {SystemInfo.graphicsDeviceName}";
                 }
                 else
                 {

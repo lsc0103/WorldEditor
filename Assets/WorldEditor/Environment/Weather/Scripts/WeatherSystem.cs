@@ -718,6 +718,8 @@ namespace WorldEditor.Environment
 
         void OnGUI()
         {
+            // 调试面板已禁用
+            /*
             if (!isInitialized || !Debug.isDebugBuild) return;
             
             GUILayout.BeginArea(new Rect(950, 10, 200, 150));
@@ -736,6 +738,7 @@ namespace WorldEditor.Environment
             }
             
             GUILayout.EndArea();
+            */
         }
 
         #endregion

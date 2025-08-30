@@ -931,7 +931,7 @@ namespace WorldEditor.Editor
                     // 强制刷新地形
                     terrain.Flush();
                     
-                    Debug.Log("[TerrainGeneratorEditor] ✅ 侵蚀效果应用完成！");
+                    Debug.Log("[TerrainGeneratorEditor]  侵蚀效果应用完成！");
                 }
                 catch (System.Exception e)
                 {
@@ -1030,7 +1030,7 @@ namespace WorldEditor.Editor
                     // 强制刷新地形
                     terrain.Flush();
                     
-                    Debug.Log("[TerrainGeneratorEditor] ✅ 河流生成完成！");
+                    Debug.Log("[TerrainGeneratorEditor]  河流生成完成！");
                 }
                 catch (System.Exception e)
                 {
@@ -1098,7 +1098,7 @@ namespace WorldEditor.Editor
                     // 强制刷新地形
                     terrain.Flush();
                     
-                    Debug.Log("[TerrainGeneratorEditor] ✅ 纹理混合完成！");
+                    Debug.Log("[TerrainGeneratorEditor]  纹理混合完成！");
                 }
                 catch (System.Exception e)
                 {

@@ -153,7 +153,54 @@ namespace WorldEditor.Editor
                 envManager.SetSeason(newSeason);
             }
             
+            // 季节进度滑条控制 - 新增功能
+            EditorGUILayout.Space(5);
+            EditorGUILayout.LabelField("季节进度控制", EditorStyles.boldLabel);
+            EditorGUILayout.BeginHorizontal();
+            EditorGUILayout.LabelField("进度:", GUILayout.Width(40));
+            float currentProgress = envManager.CurrentState.seasonProgress;
+            float newProgress = EditorGUILayout.Slider(currentProgress, 0f, 1f);
+            if (Mathf.Abs(newProgress - currentProgress) > 0.001f)
+            {
+                envManager.SetSeasonProgress(newProgress);
+            }
+            EditorGUILayout.LabelField($"{newProgress:F2}", GUILayout.Width(35));
+            EditorGUILayout.EndHorizontal();
+            
+            // 季节阶段信息
+            EditorGUILayout.BeginHorizontal();
+            int seasonDays = Mathf.FloorToInt(newProgress * 30);
+            string seasonPhase = GetSeasonPhase(newProgress);
+            EditorGUILayout.LabelField($"天数: {seasonDays}/30", GUILayout.Width(80));
+            EditorGUILayout.LabelField($"阶段: {seasonPhase}");
+            EditorGUILayout.EndHorizontal();
+            
+            // 快速设置按钮
+            EditorGUILayout.Space(3);
+            EditorGUILayout.LabelField("快速设置:", EditorStyles.miniLabel);
+            EditorGUILayout.BeginHorizontal();
+            if (GUILayout.Button("初期", GUILayout.Height(18)))
+                envManager.SetSeasonProgress(0.125f);
+            if (GUILayout.Button("早期", GUILayout.Height(18)))
+                envManager.SetSeasonProgress(0.375f);
+            if (GUILayout.Button("中期", GUILayout.Height(18)))
+                envManager.SetSeasonProgress(0.625f);
+            if (GUILayout.Button("晚期", GUILayout.Height(18)))
+                envManager.SetSeasonProgress(0.875f);
+            EditorGUILayout.EndHorizontal();
+            
             EditorGUILayout.EndVertical();
+        }
+        
+        /// <summary>
+        /// 获取季节阶段描述
+        /// </summary>
+        private string GetSeasonPhase(float progress)
+        {
+            if (progress < 0.25f) return "初期";
+            else if (progress < 0.5f) return "早期";
+            else if (progress < 0.75f) return "中期";
+            else return "晚期";
         }
         
         private void DrawSystemStatus()

@@ -458,7 +458,7 @@ namespace WorldEditor.TerrainSystem
                 yield break;
             }
             
-            // 📊 添加详细的地形信息调试
+            // 添加详细的地形信息调试
             Debug.Log($"[TerrainStamper] 地形尺寸: {terrain.terrainData.size}");
             Debug.Log($"[TerrainStamper] 地形最大高度(size.y): {terrain.terrainData.size.y}");
             Debug.Log($"[TerrainStamper] 印章设置 - heightScale: {operation.stamp.heightScale}, baseHeight: {operation.stamp.baseHeight}");
@@ -619,7 +619,7 @@ namespace WorldEditor.TerrainSystem
                         // 应用混合模式
                         float newHeight = BlendHeight(heights[z, x], stampHeight, operation.strength * falloff, operation.blendMode);
                         
-                        // ⚠️ 关键问题：检查是否被Clamp01截断
+                        // 关键问题：检查是否被Clamp01截断
                         float beforeClamp = newHeight;
                         heights[z, x] = Mathf.Clamp01(newHeight); // Unity地形要求0-1范围
                         
@@ -630,7 +630,7 @@ namespace WorldEditor.TerrainSystem
                             Debug.Log($"[TerrainStamper] 中心点调试 - 混合后高度(截断后): {heights[z, x]:F4}");
                             if (beforeClamp > 1f)
                             {
-                                Debug.LogWarning($"[TerrainStamper] ⚠️ 高度值被截断！原值: {beforeClamp:F4} -> 截断后: {heights[z, x]:F4}");
+                                Debug.LogWarning($"[TerrainStamper] 高度值被截断！原值: {beforeClamp:F4} -> 截断后: {heights[z, x]:F4}");
                             }
                         }
                     }
@@ -699,7 +699,7 @@ namespace WorldEditor.TerrainSystem
             float h34 = Mathf.Lerp(h3, h4, fracX);
             float normalizedHeight = Mathf.Lerp(h12, h34, fracY);
             
-            // ⚠️ 关键修复：应用印章的高度缩放，转换为地形高度单位
+            // 关键修复：应用印章的高度缩放，转换为地形高度单位
             // Unity地形高度是相对于terrainData.size.y的比例值(0-1)
             // heightScale应该是实际米数，需要转换为比例
             float stampHeightInMeters = stamp.baseHeight + normalizedHeight * stamp.heightScale;

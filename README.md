@@ -1,24 +1,24 @@
-# 🌍 WorldEditor - Unity开放世界编辑器
+# WorldEditor - Unity开放世界编辑器
 
 [![Unity Version](https://img.shields.io/badge/Unity-2022.3%2B-blue)](https://unity3d.com/get-unity/download)
 [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
 [![Development Status](https://img.shields.io/badge/Status-In%20Development-yellow)](PROGRESS_TRACKER.md)
 
-## 📖 项目简介
+## 项目简介
 
-WorldEditor是一个功能强大的Unity开放世界编辑器，专为创建大规模、高质量的开放世界游戏而设计。项目采用模块化架构，提供完整的世界构建工具链。
+WorldEditor是一个Unity世界编辑工具，主要用于开放世界游戏开发。在开发过程中经常遇到地形生成、环境设计等需求，所以整理了这个工具集。
 
-### ✨ 核心特性
+### 核心特性
 
-- 🏔️ **智能地形系统** - 程序化地形生成和编辑
-- 🌿 **智能植被系统** - 基于生态规律的植被分布
-- 🌊 **完整水体系统** - 湖泊、河流、海洋支持
-- 🌤️ **动态天气系统** - 真实的天气模拟和过渡
-- ☀️ **昼夜循环系统** - 完整的时间和光照管理
-- 🎨 **模块化架构** - 易于扩展和定制
-- 🚀 **高性能优化** - 针对大世界场景优化
+- **地形系统** - 支持程序化生成与编辑
+- **植被系统** - 可按照生态规则分布植被
+- **水体系统** - 包含湖泊、河流等水体功能
+- **天气系统** - 支持多种天气变化效果
+- **时间系统** - 包含昼夜循环和光照控制
+- **模块化设计** - 便于后期扩展维护
+- **性能优化** - 针对大场景进行了优化
 
-## 🎯 当前开发状态
+## 当前开发状态
 
 **当前版本:** v0.1.0-alpha  
 **开发阶段:** 环境系统开发  
@@ -26,7 +26,7 @@ WorldEditor是一个功能强大的Unity开放世界编辑器，专为创建大�
 
 查看详细进度: [开发进度跟踪](PROGRESS_TRACKER.md)
 
-## 🏗️ 系统架构
+## 系统架构
 
 ```
 WorldEditor/
@@ -34,7 +34,7 @@ WorldEditor/
 │   ├── TerrainSystem       # 地形系统
 │   ├── PlacementSystem     # 智能放置系统
 │   └── SaveSystem          # 存储系统
-├── Environment/            # 环境系统 (🔄 开发中)
+├── Environment/            # 环境系统 (开发中)
 │   ├── TimeSystem          # 时间系统
 │   ├── LightingSystem      # 光照系统
 │   ├── WeatherSystem       # 天气系统
@@ -47,23 +47,23 @@ WorldEditor/
     └── Editor              # Unity编辑器扩展
 ```
 
-## 📚 文档导航
+## 文档导航
 
-### 📋 规划文档
-- [🎯 环境系统设计蓝图](ENVIRONMENT_SYSTEM_BLUEPRINT.md) - 完整的环境系统设计
-- [📅 开发计划](DEVELOPMENT_PLAN.md) - 详细的开发时间表
-- [📈 进度跟踪](PROGRESS_TRACKER.md) - 实时开发进度
+### 规划文档
+- [环境系统设计蓝图](ENVIRONMENT_SYSTEM_BLUEPRINT.md) - 完整的环境系统设计
+- [开发计划](DEVELOPMENT_PLAN.md) - 详细的开发时间表
+- [进度跟踪](PROGRESS_TRACKER.md) - 实时开发进度
 
-### 💻 技术文档
-- [⚙️ 安装指南](docs/INSTALLATION.md) - 项目安装和配置
-- [🔧 API参考](docs/API_REFERENCE.md) - 代码API文档
-- [🎮 使用教程](docs/TUTORIALS.md) - 用户使用指南
+### 技术文档
+- [安装指南](docs/INSTALLATION.md) - 项目安装和配置
+- [API参考](docs/API_REFERENCE.md) - 代码API文档
+- [使用教程](docs/TUTORIALS.md) - 用户使用指南
 
-### 🧪 测试文档
-- [✅ 测试报告](docs/TEST_REPORTS.md) - 测试结果和分析
-- [📊 性能基准](docs/PERFORMANCE.md) - 性能测试数据
+### 测试文档
+- [测试报告](docs/TEST_REPORTS.md) - 测试结果和分析
+- [性能基准](docs/PERFORMANCE.md) - 性能测试数据
 
-## 🚀 快速开始
+## 快速开始
 
 ### 系统要求
 
@@ -91,34 +91,34 @@ WorldEditor/
 
 详细安装指南: [安装文档](docs/INSTALLATION.md)
 
-## 🛠️ 开发状态
+## 开发状态
 
-### ✅ 已完成功能
+### 已完成功能
 - [x] 基础地形生成和编辑
 - [x] 植被放置系统框架
 - [x] 项目架构设计
 - [x] 开发计划制定
 
-### 🔄 开发中功能
+### 开发中功能
 - [ ] 环境系统核心架构 (进行中)
 - [ ] 时间和昼夜循环系统
 - [ ] 基础光照系统
 
-### ⏳ 计划中功能
+### 计划中功能
 - [ ] 天空和大气系统
 - [ ] 天气系统
 - [ ] 水体系统
 - [ ] 高级特效和音效
 
-## 🤝 参与贡献
+## 参与贡献
 
-我们欢迎社区贡献！请查看以下指南：
+欢迎对项目感兴趣的开发者参与：
 
 ### 贡献方式
-- 🐛 [报告Bug](https://github.com/lsc0103/WorldEditor/issues)
-- 💡 [提出功能建议](https://github.com/lsc0103/WorldEditor/discussions)
-- 📖 改进文档
-- 💻 提交代码
+- [报告Bug](https://github.com/lsc0103/WorldEditor/issues)
+- [提出功能建议](https://github.com/lsc0103/WorldEditor/discussions)
+- 改进文档
+- 提交代码
 
 ### 开发流程
 1. Fork 项目仓库
@@ -129,46 +129,41 @@ WorldEditor/
 
 详细贡献指南: [CONTRIBUTING.md](CONTRIBUTING.md)
 
-## 📊 项目统计
+## 项目统计
 
 ### 代码统计
-- **总代码行数:** ~15,000 行
-- **C# 文件数量:** ~80 个
-- **Shader 文件数量:** ~15 个
-- **文档页面:** ~20 页
+- **代码行数:** 约13,000行
+- **C#脚本:** 76个
+- **Shader数量:** 12个
+- **文档数量:** 18个
 
-### 开发团队
-- **核心开发者:** LSC
-- **AI助手:** Claude (Anthropic)
-- **社区贡献者:** 待加入
+### 开发人员
+- **主要开发:** LSC
+- **其他贡献者:** 暂无
 
-## 📄 许可证
+## 许可证
 
 本项目采用 MIT 许可证 - 查看 [LICENSE](LICENSE) 文件了解详情。
 
-## 🔗 相关链接
+## 相关链接
 
 - **项目主页:** https://github.com/lsc0103/WorldEditor
 - **问题追踪:** https://github.com/lsc0103/WorldEditor/issues
 - **讨论区:** https://github.com/lsc0103/WorldEditor/discussions
 - **Wiki:** https://github.com/lsc0103/WorldEditor/wiki
 
-## 📞 联系我们
+## 联系信息
 
-- **项目维护者:** LSC
-- **邮箱:** [你的邮箱]
-- **Discord:** [Discord服务器链接]
+- **维护人员:** LSC
+- **问题反馈:** GitHub Issues
 
-## 🙏 致谢
+## 致谢
 
-感谢以下项目和资源的支持：
-- Unity Technologies - Unity引擎
-- Anthropic - Claude AI助手
-- 开源社区的各种工具和库
+感谢相关开源项目和Unity引擎的支持。
 
 ---
 
-**⭐ 如果这个项目对您有帮助，请给我们一个Star！**
+如果项目对你有用，可以点个Star支持一下。
 
-**最后更新:** 2024-08-22  
+**最后更新:** 2025-08-22  
 **版本:** v0.1.0-alpha

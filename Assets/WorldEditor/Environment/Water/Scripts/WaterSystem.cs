@@ -823,6 +823,8 @@ namespace WorldEditor.Environment
 
         void OnGUI()
         {
+            // 调试面板已禁用
+            /*
             if (!isInitialized || !Debug.isDebugBuild) return;
             
             GUILayout.BeginArea(new Rect(1160, 10, 200, 180));
@@ -839,6 +841,7 @@ namespace WorldEditor.Environment
             GUILayout.Label($"水文循环: {(enableHydroCycle ? "开启" : "关闭")}");
             
             GUILayout.EndArea();
+            */
         }
 
         #endregion

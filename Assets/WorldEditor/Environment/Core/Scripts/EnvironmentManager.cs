@@ -1,6 +1,7 @@
 using UnityEngine;
 using System;
 using System.Collections;
+using System.Reflection;
 using WorldEditor.Core;
 using WorldEditor.TerrainSystem;
 
@@ -165,9 +166,17 @@ namespace WorldEditor.Environment
                 }
             }
 
-            // 查找其他子系统（如果存在）
+            // 查找或创建其他子系统
             if (lightingSystem == null)
+            {
                 lightingSystem = GetComponent<LightingSystem>();
+                if (lightingSystem == null)
+                {
+                    lightingSystem = gameObject.AddComponent<LightingSystem>();
+                    Debug.Log("[EnvironmentManager] 自动创建LightingSystem组件");
+                }
+            }
+            
             if (skySystem == null)
                 skySystem = GetComponent<SkySystem>();
             if (weatherSystem == null)
@@ -334,19 +343,22 @@ namespace WorldEditor.Environment
             }
             if (lightingSystem != null)
             {
-                lightingSystem.Initialize(currentState, timeSystem, seasonSystem);
+                lightingSystem.Initialize(currentState, timeSystem, seasonSystem, weatherSystem);
             }
             
-            // 初始化其他子系统（如果存在）
-            if (skySystem == null)
-            {
-                skySystem = GetComponent<SkySystem>();
-            }
-            
+            // 初始化天气系统
             if (weatherSystem == null)
             {
-                weatherSystem = GetComponent<WeatherSystem>();
+                weatherSystem = GetComponent<WeatherSystem>() ?? gameObject.AddComponent<WeatherSystem>();
             }
+            weatherSystem.Initialize(currentState);
+            
+            // 初始化天空系统
+            if (skySystem == null)
+            {
+                skySystem = GetComponent<SkySystem>() ?? gameObject.AddComponent<SkySystem>();
+            }
+            skySystem.Initialize(currentState, timeSystem, weatherSystem);
             
             if (waterSystem == null)
             {
@@ -420,6 +432,35 @@ namespace WorldEditor.Environment
             currentState.currentSeason = season;
             OnSeasonChanged?.Invoke(season);
             Debug.Log($"[EnvironmentManager] 季节设置为 {season}");
+        }
+        
+        /// <summary>
+        /// 设置季节进度
+        /// </summary>
+        /// <param name="progress">进度值 (0-1)</param>
+        public void SetSeasonProgress(float progress)
+        {
+            progress = Mathf.Clamp01(progress);
+            
+            if (seasonSystem != null)
+            {
+                seasonSystem.SetSeasonProgress(progress);
+            }
+            
+            // 同步到当前状态
+            currentState.seasonProgress = progress;
+            
+            Debug.Log($"[EnvironmentManager] 季节进度设置为 {progress:F2} ({GetSeasonProgressDescription(progress)})");
+        }
+        
+        /// <summary>
+        /// 获取季节进度描述
+        /// </summary>
+        private string GetSeasonProgressDescription(float progress)
+        {
+            int days = Mathf.FloorToInt(progress * 30);
+            string phase = progress < 0.25f ? "初期" : progress < 0.5f ? "早期" : progress < 0.75f ? "中期" : "晚期";
+            return $"{days}/30天, {phase}";
         }
 
         /// <summary>
@@ -496,9 +537,24 @@ namespace WorldEditor.Environment
                 timeSystem.UpdateSystem();
             }
 
-            // TODO: 更新其他子系统
-            // if (lightingSystem != null) lightingSystem.UpdateSystem();
-            // if (weatherSystem != null) weatherSystem.UpdateSystem();
+            // 更新天气系统
+            if (weatherSystem != null && weatherSystem.IsActive)
+            {
+                weatherSystem.UpdateSystem();
+            }
+
+            // 更新光照系统
+            if (lightingSystem != null && lightingSystem.IsActive)
+            {
+                lightingSystem.UpdateSystem();
+            }
+
+            // 更新天空系统
+            if (skySystem != null && skySystem.IsActive)
+            {
+                // SkySystem通过事件响应，不需要主动更新
+                // skySystem.UpdateSystem();
+            }
         }
 
         #endregion
@@ -514,6 +570,186 @@ namespace WorldEditor.Environment
             
             // 通知其他系统时间变化
             OnTimeChanged?.Invoke(normalizedTime);
+        }
+
+        #endregion
+
+        #region 诊断和调试方法
+
+        /// <summary>
+        /// 强制刷新组件引用
+        /// </summary>
+        [ContextMenu("刷新组件引用")]
+        public void RefreshComponentReferences()
+        {
+            Debug.Log("==========================================");
+            Debug.Log("[EnvironmentManager] 强制刷新组件引用...");
+            
+            SetupComponentReferences();
+            
+            // 显示当前状态
+            Debug.Log($"TimeSystem: {(timeSystem != null ? "✓" : "❌")}");
+            Debug.Log($"LightingSystem: {(lightingSystem != null ? "✓" : "❌")}");
+            Debug.Log($"SeasonSystem: {(seasonSystem != null ? "✓" : "❌")}");
+            
+            // 如果运行时，重新初始化
+            if (Application.isPlaying && !isInitialized)
+            {
+                Initialize();
+            }
+            
+            Debug.Log("组件引用刷新完成！");
+            Debug.Log("==========================================");
+        }
+
+        /// <summary>
+        /// 诊断时间系统连接状态
+        /// </summary>
+        [ContextMenu("诊断时间系统连接")]
+        public void DiagnoseTimeSystemConnection()
+        {
+            Debug.Log("==========================================");
+            Debug.Log("[EnvironmentManager] 诊断时间系统连接状态...");
+            
+            // 检查EnvironmentManager初始化状态
+            Debug.Log($"EnvironmentManager初始化状态: {isInitialized}");
+            
+            // 检查TimeSystem组件
+            if (timeSystem == null)
+            {
+                Debug.LogError("❌ TimeSystem组件缺失！");
+            }
+            else
+            {
+                Debug.Log($"✓ TimeSystem组件存在");
+                Debug.Log($"  - TimeSystem初始化状态: {timeSystem.IsActive}");
+                Debug.Log($"  - 当前时间: {timeSystem.CurrentTime:F3}");
+                Debug.Log($"  - 暂停状态: {timeSystem.IsPaused}");
+                Debug.Log($"  - 时间倍率: {timeSystem.timeScale}");
+            }
+            
+            // 检查LightingSystem连接
+            if (lightingSystem == null)
+            {
+                Debug.LogError("❌ LightingSystem组件缺失！");
+            }
+            else
+            {
+                Debug.Log($"✓ LightingSystem组件存在");
+                // 通过反射检查是否订阅了事件
+                var eventInfo = typeof(TimeSystem).GetEvent("OnTimeChanged");
+                Debug.Log($"  - LightingSystem连接状态检查...");
+            }
+            
+            // 检查当前环境状态
+            if (currentState != null)
+            {
+                Debug.Log($"✓ 环境状态存在");
+                Debug.Log($"  - 环境状态中的时间: {currentState.timeOfDay:F3}");
+            }
+            else
+            {
+                Debug.LogError("❌ 环境状态缺失！");
+            }
+            
+            Debug.Log("==========================================");
+        }
+
+        /// <summary>
+        /// 强制重新连接时间系统
+        /// </summary>
+        [ContextMenu("强制重新连接时间系统")]
+        public void ForceReconnectTimeSystem()
+        {
+            Debug.Log("==========================================");
+            Debug.Log("[EnvironmentManager] 强制重新连接时间系统...");
+            
+            try
+            {
+                // 1. 重新设置组件引用
+                SetupComponentReferences();
+                
+                // 2. 如果没有初始化，执行完整初始化
+                if (!isInitialized)
+                {
+                    Initialize();
+                }
+                else
+                {
+                    // 3. 重新建立系统间通信
+                    EstablishSystemCommunication();
+                    
+                    // 4. 强制初始化子系统
+                    if (timeSystem != null && !timeSystem.IsActive)
+                    {
+                        timeSystem.Initialize(currentState);
+                    }
+                    
+                    if (lightingSystem != null)
+                    {
+                        // 强制光照系统重新连接
+                        var initMethod = lightingSystem.GetType().GetMethod("Initialize", System.Reflection.BindingFlags.Public | System.Reflection.BindingFlags.Instance);
+                        if (initMethod != null)
+                        {
+                            initMethod.Invoke(lightingSystem, new object[] { currentState, timeSystem });
+                        }
+                    }
+                }
+                
+                // 5. 测试时间变化
+                if (timeSystem != null)
+                {
+                    float testTime = timeSystem.CurrentTime;
+                    testTime = (testTime + 0.1f) % 1f; // 稍微改变时间
+                    timeSystem.SetTimeOfDay(testTime);
+                    Debug.Log($"测试时间变化: 设置时间为 {testTime:F3}");
+                }
+                
+                Debug.Log("✓ 时间系统重新连接完成");
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"❌ 时间系统重新连接失败: {ex.Message}");
+            }
+            
+            Debug.Log("==========================================");
+        }
+
+        /// <summary>
+        /// 手动测试时间变化
+        /// </summary>
+        [ContextMenu("测试时间变化")]
+        public void TestTimeChange()
+        {
+            if (timeSystem == null)
+            {
+                Debug.LogError("[EnvironmentManager] TimeSystem未找到，无法测试时间变化");
+                return;
+            }
+            
+            Debug.Log("[EnvironmentManager] 开始测试时间变化...");
+            
+            // 测试几个不同的时间点
+            float[] testTimes = { 0.0f, 0.25f, 0.5f, 0.75f };
+            string[] timeNames = { "午夜", "早晨", "正午", "傍晚" };
+            
+            for (int i = 0; i < testTimes.Length; i++)
+            {
+                timeSystem.SetTimeOfDay(testTimes[i]);
+                Debug.Log($"设置时间为 {timeNames[i]} ({testTimes[i]:F2})");
+                
+                // 等待一帧让其他系统响应
+                if (Application.isPlaying)
+                {
+                    StartCoroutine(WaitAndLogResult(testTimes[i], timeNames[i]));
+                }
+            }
+        }
+        
+        private System.Collections.IEnumerator WaitAndLogResult(float time, string name)
+        {
+            yield return null;
+            Debug.Log($"  -> {name} 时间设置完成，当前环境状态时间: {currentState?.timeOfDay:F3}");
         }
 
         #endregion
@@ -537,6 +773,8 @@ namespace WorldEditor.Environment
 
         void OnGUI()
         {
+            // 调试面板已禁用
+            /*
             if (!isInitialized || !Debug.isDebugBuild) return;
 
             // 显示调试信息
@@ -549,6 +787,7 @@ namespace WorldEditor.Environment
             GUILayout.Label($"温度: {currentState.temperature:F1}°C");
             
             GUILayout.EndArea();
+            */
         }
 
         #endregion

@@ -365,6 +365,8 @@ namespace WorldEditor.Environment
 
         void OnGUI()
         {
+            // 调试面板已禁用
+            /*
             if (!isInitialized || !Debug.isDebugBuild) return;
             
             // 显示时间系统调试信息
@@ -377,6 +379,7 @@ namespace WorldEditor.Environment
             GUILayout.Label($"状态: {(isPaused ? "暂停" : "运行")}");
             
             GUILayout.EndArea();
+            */
         }
 
         #endregion
