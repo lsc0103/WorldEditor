@@ -83,3 +83,6 @@ Thumbs.db
 # Custom
 *.log
 *.tmp
+
+# Claude Code configuration
+.claude/
