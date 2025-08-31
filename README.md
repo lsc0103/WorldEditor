@@ -7,6 +7,7 @@
 ## 项目简介
 
 WorldEditor是一个Unity世界编辑工具，主要用于开放世界游戏开发。在开发过程中经常遇到地形生成、环境设计等需求，所以整理了这个工具集。
+B站【World Editor世界编辑器v1.0.0演示】 https://www.bilibili.com/video/BV1cDhrzEETf/?share_source=copy_web&vd_source=7abd7b4f65d293fae38bb38793173ebf
 
 ### 核心特性
 
